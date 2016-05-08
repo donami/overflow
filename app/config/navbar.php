@@ -33,6 +33,13 @@ return [
         ],
 
         // This is a menu item
+        'users' => [
+            'text'  => 'Users',
+            'url'   => $this->di->get('url')->create('users'),
+            'title' => 'Display user list'
+        ],
+
+        // This is a menu item
         'about' => [
             'text'  => 'About',
             'url'   => $this->di->get('url')->create('about'),
