@@ -16,13 +16,21 @@ return [
         'name' => 'anax-base',
     ],
 
-    
+
     /**
      * Add default views.
      */
     'views' => [
         ['region' => 'header', 'template' => 'welcome/header', 'data' => [], 'sort' => -1],
         ['region' => 'footer', 'template' => 'welcome/footer', 'data' => [], 'sort' => -1],
+        ['region' => 'navbar', 'template' => [
+            'callback' => function() {
+              return $this->di->navbar->create();
+            },
+          ],
+          'data' => [],
+          'sort' => -1
+        ]
     ],
 
 
@@ -38,7 +46,7 @@ return [
         'title_append' => ' | Anax a web template',
 
         // Stylesheets
-        'stylesheets' => ['css/style.css'],
+        'stylesheets' => ['css/style.css', 'css/navbar.css'],
 
         // Inline style
         'style' => null,
