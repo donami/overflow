@@ -60,6 +60,7 @@ $app->router->add('tags', function() use ($app) {
   ]);
 });
 
+// Display single tag route
 $app->router->add('tag', function() use ($app) {
   $app->theme->setTitle('View tag');
 
@@ -71,9 +72,19 @@ $app->router->add('tag', function() use ($app) {
   $app->db->execute();
   $res = $app->db->fetchOne();
 
+  // Get questions with this tag
+  $app->db->select("Q.title")
+      ->from('questions AS Q')
+      ->leftJoin('questions_tags AS QT', 'Q.id = QT.question_id')
+      ->leftJoin('tags AS T', 'T.id = QT.tag_id')
+      ->where('QT.tag_id = ' . $tagId);
+
+  $questions = $app->db->executeFetchAll();
+
   // Create the view
   $app->views->add('tags/view', [
     'tag' => $res,
+    'questions' => $questions,
   ]);
 });
 
