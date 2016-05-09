@@ -1,11 +1,16 @@
 <?php
 require __DIR__.'/config_with_app.php';
 
+// Nicer looking urls
 $app->url->setUrlType(\Anax\Url\CUrl::URL_CLEAN);
+
+// Set the theme
 $app->theme->configure(ANAX_APP_PATH . 'config/theme.php');
 
+// Load the navbar configuration
 $app->navbar->configure(ANAX_APP_PATH . 'config/navbar.php');
 
+// Database handling
 $di->setShared('db', function() {
     $db = new \Mos\Database\CDatabaseBasic();
     $db->setOptions(require ANAX_APP_PATH . 'config/config_db.php');
@@ -13,129 +18,126 @@ $di->setShared('db', function() {
     return $db;
 });
 
+// Question controller
+$di->set('QuestionController', function() use($di) {
+  $controller = new donami\Question\QuestionController();
+  $controller->setDI($di);
+  return $controller;
+});
+
+// Tag controller
+$di->set('TagController', function() use($di) {
+  $controller = new donami\Tag\TagController();
+  $controller->setDI($di);
+  return $controller;
+});
+
+// User controller
+$di->set('UserController', function() use($di) {
+  $controller = new donami\User\UserController();
+  $controller->setDI($di);
+  return $controller;
+});
+
+// About controller
+$di->set('AboutController', function() use($di) {
+  $controller = new donami\About\AboutController();
+  $controller->setDI($di);
+  return $controller;
+});
+
 $app = new \Anax\Kernel\CAnax($di);
 
+// Default route
 $app->router->add('', function() use ($app) {
 
-    $app->theme->setTitle("Välkommen till min sida");
+    $app->theme->setTitle("Welcome to this page");
 
 });
 
+// List question route
 $app->router->add('questions', function() use ($app) {
-  $app->theme->setTitle('Questions');
-
-  $app->db->select()->from('questions');
-  $res = $app->db->executeFetchAll();
-
-  $app->views->add('questions/index', [
-    'questions' => $res,
-  ]);
+  $app
+    ->dispatcher
+    ->forward([
+      'controller' => 'question',
+      'action' => 'list',
+    ]);
 });
 
+// View question route
 $app->router->add('question', function() use ($app) {
-  $app->theme->setTitle('View question');
-
   $questionId = $app->request->getGet('id');
 
-  $app->db->select()->from('questions')->where('id = ' . $questionId);
-  $app->db->execute();
-  $res = $app->db->fetchOne();
-
-  $app->views->add('questions/view', [
-    'question' => $res,
-  ]);
-
+  $app
+    ->dispatcher
+    ->forward([
+      'controller' => 'question',
+      'action' => 'view',
+      'params' => [$questionId]
+    ]);
 });
 
 $app->router->add('tags', function() use ($app) {
-  $app->theme->setTitle('Tags');
-
-  // Fetch tags from database
-  $app->db->select()->from('tags');
-  $res = $app->db->executeFetchAll();
-
-  // Create the view
-  $app->views->add('tags/list', [
-    'tags' => $res,
-  ]);
+  $app
+    ->dispatcher
+    ->forward([
+      'controller' => 'tag',
+      'action' => 'list',
+    ]);
 });
 
 // Display single tag route
 $app->router->add('tag', function() use ($app) {
-  $app->theme->setTitle('View tag');
 
-  // Get the tag ID from url
   $tagId = $app->request->getGet('id');
 
-  // Fetch the tag from database
-  $app->db->select()->from('tags')->where('id = ' . $tagId);
-  $app->db->execute();
-  $res = $app->db->fetchOne();
+  $app
+    ->dispatcher
+    ->forward([
+      'controller' => 'tag',
+      'action' => 'view',
+      'params' => [$tagId]
+    ]);
 
-  // Get questions with this tag
-  $app->db->select("Q.title, Q.id")
-      ->from('questions AS Q')
-      ->leftJoin('questions_tags AS QT', 'Q.id = QT.question_id')
-      ->leftJoin('tags AS T', 'T.id = QT.tag_id')
-      ->where('QT.tag_id = ' . $tagId);
-
-  $questions = $app->db->executeFetchAll();
-
-  // Create the view
-  $app->views->add('tags/view', [
-    'tag' => $res,
-    'questions' => $questions,
-  ]);
 });
 
 // Display user list route
 $app->router->add('users', function() use ($app) {
-  $app->theme->setTitle('Display user list');
 
-  // Fetch tags from database
-  $app->db->select()->from('users');
-  $res = $app->db->executeFetchAll();
+  $app
+    ->dispatcher
+    ->forward([
+      'controller' => 'user',
+      'action' => 'list',
+    ]);
 
-  // Create the view
-  $app->views->add('users/list', [
-    'users' => $res,
-  ]);
 });
 
 // Display user route
 $app->router->add('user', function() use ($app) {
-  $app->theme->setTitle('View user page');
-
-  // Get the user ID from url
   $userId = $app->request->getGet('id');
 
-  // Fetch the user from database
-  $app->db->select()->from('users')->where('id = ' . $userId);
-  $app->db->execute();
-  $res = $app->db->fetchOne();
-
-  // Fetch users questions_tags
-  $app->db->select()
-    ->from('questions')
-    ->where('user_id = ' . $userId);
-  $questions = $app->db->executeFetchAll();
-
-  // Create the view
-  $app->views->add('users/view', [
-    'user' => $res,
-    'questions' => $questions,
-  ]);
+  $app
+    ->dispatcher
+    ->forward([
+      'controller' => 'user',
+      'action' => 'view',
+      'params' => [$userId]
+    ]);
 });
 
 // About route
 $app->router->add('about', function() use ($app) {
-  $app->theme->setTitle('About us');
 
+  $app
+    ->dispatcher
+    ->forward([
+      'controller' => 'about',
+      'action' => 'view',
+    ]);
 
-  // Create the view
-  $app->views->add('about/view', []);
 });
-
 
 $app->router->handle();
 $app->theme->render();

@@ -22,4 +22,7 @@
     <?php endif; ?>
   </div>
 
+  <h3>Questions answered by this user:</h3>
+  <div>Not yet implemented</div>
+
 </div>

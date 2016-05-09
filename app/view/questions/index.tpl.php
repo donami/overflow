@@ -1,4 +1,11 @@
 <div>
+
+  <div>
+
+    <a href="<?php echo $this->url->create('question/create') ?>">Submit question</a>
+
+  </div>
+
   <?php if (!empty($questions)): ?>
 
     <?php foreach ($questions as $question): ?>
