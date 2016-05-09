@@ -13,7 +13,7 @@
 
         <div>
 
-          <a href="#"><?php echo $question->title ?> </a>
+          <a href="<?php echo $this->url->create('question?id=' . $question->id) ?>"><?php echo $question->title ?> </a>
 
         </div>
 

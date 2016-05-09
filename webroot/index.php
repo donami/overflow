@@ -73,7 +73,7 @@ $app->router->add('tag', function() use ($app) {
   $res = $app->db->fetchOne();
 
   // Get questions with this tag
-  $app->db->select("Q.title")
+  $app->db->select("Q.title, Q.id")
       ->from('questions AS Q')
       ->leftJoin('questions_tags AS QT', 'Q.id = QT.question_id')
       ->leftJoin('tags AS T', 'T.id = QT.tag_id')
