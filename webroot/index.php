@@ -114,9 +114,16 @@ $app->router->add('user', function() use ($app) {
   $app->db->execute();
   $res = $app->db->fetchOne();
 
+  // Fetch users questions_tags
+  $app->db->select()
+    ->from('questions')
+    ->where('user_id = ' . $userId);
+  $questions = $app->db->executeFetchAll();
+
   // Create the view
   $app->views->add('users/view', [
     'user' => $res,
+    'questions' => $questions,
   ]);
 });
 
