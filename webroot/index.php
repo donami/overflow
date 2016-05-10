@@ -25,6 +25,13 @@ $di->set('QuestionController', function() use($di) {
   return $controller;
 });
 
+// Reply controller
+$di->set('ReplyController', function() use($di) {
+  $controller = new donami\Reply\ReplyController();
+  $controller->setDI($di);
+  return $controller;
+});
+
 // Tag controller
 $di->set('TagController', function() use($di) {
   $controller = new donami\Tag\TagController();
@@ -78,6 +85,15 @@ $app->router->add('question', function() use ($app) {
     ]);
 });
 
+$app->router->add('question/create', function() use($app) {
+  $app
+    ->dispatcher
+    ->forward([
+      'controller' => 'question',
+      'action' => 'create',
+    ]);
+});
+
 $app->router->add('tags', function() use ($app) {
   $app
     ->dispatcher
@@ -125,6 +141,26 @@ $app->router->add('user', function() use ($app) {
       'action' => 'view',
       'params' => [$userId]
     ]);
+});
+
+// Post create reply route
+$app->router->add('reply/create', function() use ($app) {
+
+  $app
+    ->dispatcher
+    ->forward([
+      'controller' => 'reply',
+      'action' => 'create',
+      'params' => [$_POST]
+    ]);
+
+  // $app
+  //   ->dispatcher
+  //   ->forward([
+  //     'controller' => 'user',
+  //     'action' => 'view',
+  //     'params' => [$userId]
+  //   ]);
 });
 
 // About route
