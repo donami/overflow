@@ -143,6 +143,43 @@ $app->router->add('user', function() use ($app) {
     ]);
 });
 
+
+// Accept reply as answer route
+$app->router->add('reply/accept', function() use ($app) {
+
+  $replyId = $app->request->getGet('replyID');
+  $questionId = $app->request->getGet('questionID');
+
+  $app
+    ->dispatcher
+    ->forward([
+      'controller' => 'reply',
+      'action' => 'acceptAnswer',
+      'params' => [$replyId, $questionId]
+    ]);
+
+});
+
+// Rate an answer route
+$app->router->add('reply/point', function() use ($app) {
+
+  $id = $app->request->getGet('id');
+  $action = $app->request->getGet('action');
+
+  if (!($action === 'increase' || $action === 'decrease')) {
+    die("Invalid action");
+  }
+
+  $app
+    ->dispatcher
+    ->forward([
+      'controller' => 'reply',
+      'action' => 'point',
+      'params' => [$id, $action]
+    ]);
+
+});
+
 // Post create reply route
 $app->router->add('reply/create', function() use ($app) {
 
@@ -154,13 +191,6 @@ $app->router->add('reply/create', function() use ($app) {
       'params' => [$_POST]
     ]);
 
-  // $app
-  //   ->dispatcher
-  //   ->forward([
-  //     'controller' => 'user',
-  //     'action' => 'view',
-  //     'params' => [$userId]
-  //   ]);
 });
 
 // About route

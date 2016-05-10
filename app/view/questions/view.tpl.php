@@ -34,9 +34,22 @@
 
     <?php foreach ($replies as $reply): ?>
 
+
       <div class="comment">
 
         <div class="parent-comment">
+
+          <?php if ($question->answered_id == $reply['main']['id']): ?>
+          <div>
+            This comment has been marked as best answer
+          </div>
+          <?php endif; ?>
+
+          <div>
+            Points: <?php echo $reply['main']['points']; ?>
+            <a href="<?php echo $this->url->create('reply/point?id=' . $reply['main']['id'] . '&amp;action=increase') ?>">+</a>
+            <a href="<?php echo $this->url->create('reply/point?id=' . $reply['main']['id'] . '&amp;action=decrease') ?>">-</a>
+          </div>
 
           <div>
             <a href="<?php echo $this->url->create('user?id=' . $reply['main']['user_id'])?>">
@@ -44,6 +57,8 @@
             </a>
           </div>
           <div><?php echo $reply['main']['body'] ?></div>
+
+          <div><a href="<?php echo $this->url->create('reply/accept?replyID=' . $reply['main']['id']) ?>&amp;questionID=<?php echo $reply['main']['question_id']?>">Accept as answer</a></div>
 
         </div>
 
@@ -88,9 +103,10 @@
   <?php endif; ?>
 
   <div>
-    <form action="">
+    <form action="reply/create" method="POST">
       <div>
-        <textarea name="comment" cols="30" rows="10"></textarea>
+        <textarea name="reply_comment" cols="30" rows="10"></textarea>
+        <input type="hidden" name="question_id" value="<?php echo $question->id ?>">
       </div>
       <div>
         <button type="submit">Reply</button>

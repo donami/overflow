@@ -22,6 +22,27 @@
     <?php endif; ?>
   </div>
 
+  <h3>Answers by this user:</h3>
+  <div>
+    <?php if (empty($answers)): ?>
+
+      <p>No questions by this user yet</p>
+
+    <?php else: ?>
+
+      <?php foreach ($answers as $answer): ?>
+
+        <div>
+
+          <a href="<?php echo $this->url->create('question?id=' . $answer->question_id) ?>"><?php echo $answer->question_title ?></a>
+
+        </div>
+
+      <?php endforeach; ?>
+
+    <?php endif; ?>
+  </div>
+
   <h3>Questions answered by this user:</h3>
   <div>Not yet implemented</div>
 

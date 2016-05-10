@@ -25,16 +25,26 @@ class UserController implements \Anax\DI\IInjectionAware
       $this->db->execute();
       $res = $this->db->fetchOne();
 
-      // Fetch users questions_tags
+      // Fetch users questions
       $this->db->select()
         ->from('questions')
         ->where('user_id = ' . $userId);
       $questions = $this->db->executeFetchAll();
 
+      // Fetch answered questions by this user
+      $this->db
+        ->select('Q.title AS question_title, Q.id AS question_id')
+        ->join('questions AS Q', 'Q.id = QR.question_id')
+        ->from('questions_replies AS QR')
+        ->where('QR.user_id = ' . $userId . ' && QR.comment_id = 0');
+
+      $answers = $this->db->executeFetchAll();
+
       // Create the view
       $this->views->add('users/view', [
         'user' => $res,
         'questions' => $questions,
+        'answers' => $answers,
       ]);
     }
 

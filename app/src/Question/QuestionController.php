@@ -65,7 +65,7 @@ class QuestionController implements \Anax\DI\IInjectionAware
       $comments = array();
 
       foreach ($data as $key => $value) {
-        if ($value['comment_id'] === NULL) {
+        if ($value['comment_id'] === NULL || $value['comment_id'] == 0) {
           $comments[$value['id']]['main'] = $value;
         }
         else {
@@ -105,7 +105,7 @@ class QuestionController implements \Anax\DI\IInjectionAware
       $this->theme->setTitle('Ask a question');
 
       if (!empty($_POST)) {
-        $this->insert($_POST);
+          $this->insert($_POST);
       }
 
       $this->views->add('questions/create', []);
