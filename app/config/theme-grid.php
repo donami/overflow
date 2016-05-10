@@ -13,7 +13,7 @@ return [
      */
     'settings' => [
         'path' => ANAX_INSTALL_PATH . 'theme/',
-        'name' => 'anax-base',
+        'name' => 'anax-grid',
     ],
 
 

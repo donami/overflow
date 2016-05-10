@@ -15,7 +15,6 @@ class QuestionController implements \Anax\DI\IInjectionAware
      */
     public function viewAction($questionId)
     {
-      $this->theme->addStylesheet('css/question.css');
       $this->theme->setTitle('View question');
 
       // Fetch the question

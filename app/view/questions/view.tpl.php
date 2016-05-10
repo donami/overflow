@@ -39,26 +39,32 @@
 
         <div class="parent-comment">
 
-          <?php if ($question->answered_id == $reply['main']['id']): ?>
-          <div>
-            This comment has been marked as best answer
-          </div>
-          <?php endif; ?>
+          <div class="left">
 
-          <div>
-            Points: <?php echo $reply['main']['points']; ?>
-            <a href="<?php echo $this->url->create('reply/point?id=' . $reply['main']['id'] . '&amp;action=increase') ?>">+</a>
-            <a href="<?php echo $this->url->create('reply/point?id=' . $reply['main']['id'] . '&amp;action=decrease') ?>">-</a>
+            <?php if ($question->answered_id == $reply['main']['id']): ?>
+            <div>
+              This comment has been marked as best answer
+            </div>
+            <?php endif; ?>
+
+            <div>
+              Points: <?php echo $reply['main']['points']; ?>
+              <a href="<?php echo $this->url->create('reply/point?id=' . $reply['main']['id'] . '&amp;action=increase') ?>">+</a>
+              <a href="<?php echo $this->url->create('reply/point?id=' . $reply['main']['id'] . '&amp;action=decrease') ?>">-</a>
+            </div>
+
           </div>
 
-          <div>
-            <a href="<?php echo $this->url->create('user?id=' . $reply['main']['user_id'])?>">
-              <?php echo $reply['main']['username'] ?>
-            </a>
-          </div>
-          <div><?php echo $this->textFilter->doFilter($reply['main']['body'], 'shortcode, markdown'); ?></div>
+          <div class="right">
+            <div>
+              <a href="<?php echo $this->url->create('user?id=' . $reply['main']['user_id'])?>">
+                <?php echo $reply['main']['username'] ?>
+              </a>
+            </div>
+            <div><?php echo $this->textFilter->doFilter($reply['main']['body'], 'shortcode, markdown'); ?></div>
 
-          <div><a href="<?php echo $this->url->create('reply/accept?replyID=' . $reply['main']['id']) ?>&amp;questionID=<?php echo $reply['main']['question_id']?>">Accept as answer</a></div>
+            <div><a href="<?php echo $this->url->create('reply/accept?replyID=' . $reply['main']['id']) ?>&amp;questionID=<?php echo $reply['main']['question_id']?>">Accept as answer</a></div>
+          </div>
 
         </div>
 
@@ -67,13 +73,18 @@
 
             <?php foreach ($reply['replies'] as $comment): ?>
 
-              <div>
-                <div>
+              <div class="child-comment">
+
+                <div class="left">
                   <a href="<?php echo $this->url->create('user?id=' . $comment['user_id'])?>">
                     <?php echo $comment['username'] ?>
                   </a>
                 </div>
-                <?php echo $this->textFilter->doFilter($comment['body'], 'shortcode, markdown'); ?>
+
+                <div class="right">
+                  <?php echo $this->textFilter->doFilter($comment['body'], 'shortcode, markdown'); ?>
+                </div>
+
               </div>
 
             <?php endforeach; ?>

@@ -5,7 +5,7 @@ require __DIR__.'/config_with_app.php';
 $app->url->setUrlType(\Anax\Url\CUrl::URL_CLEAN);
 
 // Set the theme
-$app->theme->configure(ANAX_APP_PATH . 'config/theme.php');
+$app->theme->configure(ANAX_APP_PATH . 'config/theme-grid.php');
 
 // Load the navbar configuration
 $app->navbar->configure(ANAX_APP_PATH . 'config/navbar.php');
