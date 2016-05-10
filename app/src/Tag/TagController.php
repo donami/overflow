@@ -60,4 +60,29 @@ class TagController implements \Anax\DI\IInjectionAware
       ]);
     }
 
+    /**
+     * Get most popular tags
+     *
+     * @param  integer $limit
+     * @return array
+     */
+    public function getPopularAction($limit = 10)
+    {
+      $this->db
+        ->select('
+          QT.tag_id AS id,
+          COUNT(QT.tag_id) AS count,
+          T.title
+        ')
+        ->from('questions_tags AS QT')
+        ->join('tags AS T', 'T.id = QT.tag_id')
+        ->groupBy('tag_id')
+        ->orderBy('count DESC')
+        ->limit($limit);
+
+      $res = $this->db->executeFetchAll();
+
+      return $res;
+    }
+
 }

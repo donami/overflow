@@ -96,6 +96,25 @@ class QuestionController implements \Anax\DI\IInjectionAware
     }
 
     /**
+     * Get most recent Questions
+     *
+     * @param  integer $limit  How many rows to fetch
+     * @return array
+     */
+    public function getRecentAction($limit = 10)
+    {
+      $this->db
+        ->select()
+        ->from('questions')
+        ->limit($limit)
+        ->orderBy('date_created DESC');
+
+      $res = $this->db->executeFetchAll();
+
+      return $res;
+    }
+
+    /**
      * View action for creating a question
      *
      * @return void

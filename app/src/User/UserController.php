@@ -67,4 +67,23 @@ class UserController implements \Anax\DI\IInjectionAware
       ]);
     }
 
+    /**
+     * Get most active users
+     *
+     * @param  integer $limit
+     * @return array
+     */
+    public function getActiveAction($limit = 10)
+    {
+      $this->db
+        ->select('id, username, posts')
+        ->from('users')
+        ->orderBy('posts DESC')
+        ->limit($limit);
+
+      $res = $this->db->executeFetchAll();
+
+      return $res;
+    }
+
 }

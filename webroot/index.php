@@ -60,6 +60,32 @@ $app->router->add('', function() use ($app) {
 
     $app->theme->setTitle("Welcome to this page");
 
+    // Get 10 recent questions
+    $recent = $app->dispatcher->forward([
+      'controller' => 'question',
+      'action' => 'getRecent',
+      'params' => [10],
+    ]);
+
+    // Get top 10 active users
+    $activeUsers = $app->dispatcher->forward([
+      'controller' => 'user',
+      'action' => 'getActive',
+      'params' => [10],
+    ]);
+
+    // Get top 10 popular tags
+    $popularTags = $app->dispatcher->forward([
+      'controller' => 'tag',
+      'action' => 'getPopular',
+      'params' => [10],
+    ]);
+
+    $app->views->add('welcome/index', [
+      'recentQuestions' => $recent,
+      'activeUsers' => $activeUsers,
+      'popularTags' => $popularTags,
+    ]);
 });
 
 // List question route
@@ -75,8 +101,6 @@ $app->router->add('questions', function() use ($app) {
 // View question route
 $app->router->add('question', function() use ($app) {
   $questionId = $app->request->getGet('id');
-
-  $test = '* hej';
 
   $app
     ->dispatcher
