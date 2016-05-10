@@ -1,7 +1,7 @@
 <div id="question-container">
   <h1><?php echo $question->title ?></h1>
   <div>
-    <p><?php echo $question->body ?></p>
+    <p><?php echo $this->textFilter->doFilter($question->body, 'shortcode, markdown'); ?></p>
   </div>
 
   <div>
@@ -56,7 +56,7 @@
               <?php echo $reply['main']['username'] ?>
             </a>
           </div>
-          <div><?php echo $reply['main']['body'] ?></div>
+          <div><?php echo $this->textFilter->doFilter($reply['main']['body'], 'shortcode, markdown'); ?></div>
 
           <div><a href="<?php echo $this->url->create('reply/accept?replyID=' . $reply['main']['id']) ?>&amp;questionID=<?php echo $reply['main']['question_id']?>">Accept as answer</a></div>
 
@@ -73,7 +73,7 @@
                     <?php echo $comment['username'] ?>
                   </a>
                 </div>
-                <?php echo $comment['body']; ?>
+                <?php echo $this->textFilter->doFilter($comment['body'], 'shortcode, markdown'); ?>
               </div>
 
             <?php endforeach; ?>

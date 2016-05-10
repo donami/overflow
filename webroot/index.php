@@ -76,6 +76,8 @@ $app->router->add('questions', function() use ($app) {
 $app->router->add('question', function() use ($app) {
   $questionId = $app->request->getGet('id');
 
+  $test = '* hej';
+
   $app
     ->dispatcher
     ->forward([
