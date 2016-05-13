@@ -16,7 +16,7 @@ class AuthController extends LoginForm implements \Anax\DI\IInjectionAware
     public function loginAction($username, $password)
     {
       $check = $this->db
-                  ->select('id, username, email')
+                  ->select('id, username, email, admin')
                   ->from('users')
                   ->where('username = "' . $username . '" && password = "' . $password . '"')
                   ->limit(1);

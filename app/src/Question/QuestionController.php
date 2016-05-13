@@ -51,6 +51,7 @@ class QuestionController implements \Anax\DI\IInjectionAware
 
       $authed = false;
       $owner = false;
+      $admin = $this->auth->isAdmin();
 
       if ($this->auth->isAuthed()) {
         $authed = true;
@@ -66,6 +67,7 @@ class QuestionController implements \Anax\DI\IInjectionAware
         'tags'      => $tags,
         'owner'     => $owner,
         'authed'    => $authed,
+        'admin'     => $admin,
       ]);
     }
 

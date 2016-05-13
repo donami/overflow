@@ -113,10 +113,15 @@
 
             <?php if ($owner): ?>
 
-              <div>
-                <a class="btn" href="<?php echo $this->url->create('reply/accept?replyID=' . $reply['main']['id']) ?>&amp;questionID=<?php echo $reply['main']['question_id']?>">
+              <div class="actions">
+                <a class="btn btn-accept" href="<?php echo $this->url->create('reply/accept?replyID=' . $reply['main']['id']) ?>&amp;questionID=<?php echo $reply['main']['question_id']?>">
                   Accept as answer
                 </a>
+                <?php if ($admin): ?>
+                <a class="btn btn-warning" href="<?php echo $this->url->create('reply/delete?replyID=' . $reply['main']['id']) ?>">
+                  Remove answer
+                </a>
+                <?php endif; ?>
               </div>
 
             <?php endif; ?>
@@ -197,10 +202,12 @@
 
   <?php endif; ?>
 
-  <div>
+  <div class="form-add-answer">
     <?php if ($authed): ?>
 
       <form action="reply/create" method="POST">
+        <h3>Answer the question</h3>
+        <p>Do you know the answer? Help by submitting your thoughts below</p>
         <div>
           <textarea name="reply_comment" cols="30" rows="10"></textarea>
           <input type="hidden" name="question_id" value="<?php echo $question->id ?>">

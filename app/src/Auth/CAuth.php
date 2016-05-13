@@ -29,4 +29,13 @@ class CAuth
     return $this->di->session->get('user')->id;
   }
 
+  public function isAdmin()
+  {
+    if ($this->isAuthed()) {
+      if ($this->di->session->get('user')->admin) {
+        return true;
+      }
+    }
+    return false;
+  }
 }

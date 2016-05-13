@@ -16,28 +16,33 @@ class ReplyController implements \Anax\DI\IInjectionAware
      */
     public function createAction($data)
     {
-      if (!isset($data['comment_id'])) {
-        $commentId = 'NULL';
-      }
-      else {
-        $commentId = (int)$data['comment_id'];
-      }
-
       $body = trim($data['reply_comment']);
 
       if (empty($body)) {
         die("You cannot leave the comment field empty");
       }
 
-      $this->db->insert(
-          'questions_replies',
-          [
-              'user_id'  => $this->auth->id(),
-              'question_id' => (int)$data['question_id'],
-              'comment_id' => (int)$commentId,
-              'body' => $data['reply_comment'],
-          ]
-      );
+      if (!isset($data['comment_id'])) {
+        $this->db->insert(
+            'questions_replies',
+            [
+                'user_id'  => $this->auth->id(),
+                'question_id' => (int)$data['question_id'],
+                'body' => $data['reply_comment'],
+            ]
+        );
+      }
+      else {
+        $this->db->insert(
+            'questions_replies',
+            [
+                'user_id'  => $this->auth->id(),
+                'question_id' => (int)$data['question_id'],
+                'comment_id' => (int)$data['comment_id'],
+                'body' => $data['reply_comment'],
+            ]
+        );
+      }
 
       $this->db->execute();
 
@@ -145,6 +150,19 @@ class ReplyController implements \Anax\DI\IInjectionAware
       }
 
       $this->response->redirect($this->url->create('question?id=' . $reply->question_id));
+    }
+
+    /**
+     * Remove a comment
+     *
+     * @param  int $replyId
+     * @return boolean
+     */
+    public function deleteAction($replyId)
+    {
+      $this->db->delete('questions_replies', 'id = ' . $replyId);
+
+      return $this->db->execute();
     }
 
 }

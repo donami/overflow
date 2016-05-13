@@ -217,6 +217,22 @@ $app->router->add('reply/accept', function() use ($app) {
 
 });
 
+// Delete reply route
+$app->router->add('reply/delete', function() use ($app) {
+
+  $replyId = $app->request->getGet('replyID');
+
+  $app
+    ->dispatcher
+    ->forward([
+      'controller' => 'reply',
+      'action' => 'delete',
+      'params' => [$replyId]
+    ]);
+
+});
+
+
 // Rate an answer route
 $app->router->add('reply/point', function() use ($app) {
 
