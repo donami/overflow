@@ -27,6 +27,10 @@ class QuestionController implements \Anax\DI\IInjectionAware
       $this->db->execute();
       $res = $this->db->fetchOne();
 
+      if (!$res) {
+        die('Unable to find the question');
+      }
+
       // Fetch the replies
       $this->db
         ->select('QR.*, U.username, QR.date_created')
@@ -198,6 +202,32 @@ class QuestionController implements \Anax\DI\IInjectionAware
 
       // Redirect to the created question
       $this->response->redirect($this->url->create('question?id=' . $questionId));
+    }
+
+    /**
+     * The delete action
+     *
+     * @param  int $questionId
+     * @return void
+     */
+    public function deleteAction($questionId) {
+      // If the question was deleted relocate the user
+      if ($this->delete($questionId)) {
+        $this->response->redirect($this->url->create('questions'));
+      }
+    }
+
+    /**
+     * Remove from Database
+     *
+     * @param  int $questionId
+     * @return boolean
+     */
+    public function delete($questionId)
+    {
+      $this->db->delete('questions', 'id = ' . $questionId);
+
+      return $this->db->execute();
     }
 
 }

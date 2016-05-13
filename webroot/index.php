@@ -142,6 +142,7 @@ $app->router->add('question', function() use ($app) {
     ]);
 });
 
+// Create question route
 $app->router->add('question/create', function() use($app) {
   $app
     ->dispatcher
@@ -151,6 +152,21 @@ $app->router->add('question/create', function() use($app) {
     ]);
 });
 
+// Delete question route
+$app->router->add('question/delete', function() use($app) {
+
+  $questionId = $app->request->getGet('id');
+
+  $app
+    ->dispatcher
+    ->forward([
+      'controller' => 'question',
+      'action' => 'delete',
+      'params' => [$questionId],
+    ]);
+});
+
+// View tag list route
 $app->router->add('tags', function() use ($app) {
   $app
     ->dispatcher

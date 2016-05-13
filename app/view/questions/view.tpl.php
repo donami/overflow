@@ -4,9 +4,9 @@
 
     <div class="main">
 
-      <h1><?php echo $question->title ?></h1>
+      <h1 class="title"><?php echo htmlspecialchars($question->title) ?></h1>
       <div>
-        <p><?php echo $this->textFilter->doFilter($question->body, 'shortcode, markdown'); ?></p>
+        <p><?php echo $this->textFilter->doFilter(htmlspecialchars($question->body), 'shortcode, markdown'); ?></p>
       </div>
 
     </div>
@@ -31,9 +31,17 @@
           <li><i class="fa fa-comments fa-lg fa-fw"></i> &nbsp; Comments: <?php echo $question->questions ?> </li>
         </ul>
 
+        <?php if ($admin): ?>
+          <div class="actions">
+            <a class="btn btn-warning" href="<?php echo $this->url->create('question/delete?id=' . $question->id)?>">Delete</a>
+          </div>
+        <?php endif ?>
+
       </div>
 
     </div>
+
+
 
     <div class="tags">
       <h6>Tags:</h6>
@@ -109,7 +117,7 @@
 
             </div>
 
-            <div class="post"><?php echo $this->textFilter->doFilter($reply['main']['body'], 'shortcode, markdown'); ?></div>
+            <div class="post"><?php echo $this->textFilter->doFilter(htmlspecialchars($reply['main']['body']), 'shortcode, markdown'); ?></div>
 
             <?php if ($owner): ?>
 
@@ -163,9 +171,8 @@
                     </a>
                     <span class="meta"><?php echo $reply['main']['date_created'] ?></span>
                   </div>
-
                   <div class="post">
-                    <?php echo $this->textFilter->doFilter($comment['body'], 'shortcode, markdown'); ?>
+                    <?php echo $this->textFilter->doFilter(htmlspecialchars($comment['body']), 'shortcode, markdown'); ?>
                   </div>
                 </div>
 
