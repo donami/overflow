@@ -23,6 +23,12 @@ class ReplyController implements \Anax\DI\IInjectionAware
         $commentId = (int)$data['comment_id'];
       }
 
+      $body = trim($data['reply_comment']);
+
+      if (empty($body)) {
+        die("You cannot leave the comment field empty");
+      }
+
       $this->db->insert(
           'questions_replies',
           [
@@ -44,7 +50,7 @@ class ReplyController implements \Anax\DI\IInjectionAware
      * @return void
      */
     public function acceptAnswerAction($replyId, $questionId)
-    {    
+    {
       // Fetch the reply data in order to get the user id
       $this->db
         ->select('user_id')
