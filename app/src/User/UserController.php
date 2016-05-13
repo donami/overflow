@@ -40,11 +40,20 @@ class UserController implements \Anax\DI\IInjectionAware
 
       $answers = $this->db->executeFetchAll();
 
+      // Fetch answers that has been accepted as best answer
+      $this->db
+        ->select()
+        ->from('questions')
+        ->where('user_answered_id = ' . $userId);
+
+      $bestAnswers = $this->db->executeFetchAll();
+
       // Create the view
       $this->views->add('users/view', [
         'user' => $res,
         'questions' => $questions,
         'answers' => $answers,
+        'bestAnswers' => $bestAnswers,
       ]);
     }
 

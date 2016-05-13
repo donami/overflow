@@ -18,13 +18,18 @@ class QuestionController implements \Anax\DI\IInjectionAware
       $this->theme->setTitle('View question');
 
       // Fetch the question
-      $this->db->select()->from('questions')->where('id = ' . $questionId);
+      $this->db
+        ->select('Q.id, Q.title, Q.body, Q.date_created, Q.user_id, Q.answered_id, U.username, U.posts, U.questions, U.answers')
+        ->from('questions AS Q')
+        ->join('users AS U', 'Q.user_id = U.id')
+        ->where('Q.id = ' . $questionId);
+
       $this->db->execute();
       $res = $this->db->fetchOne();
 
       // Fetch the replies
       $this->db
-        ->select('QR.*, U.username')
+        ->select('QR.*, U.username, QR.date_created')
         ->from('questions_replies AS QR')
         ->join('users AS U', 'QR.user_id = U.id')
         ->where('question_id = ' . $questionId);
@@ -43,10 +48,24 @@ class QuestionController implements \Anax\DI\IInjectionAware
 
       $tags = $this->db->executeFetchAll();
 
+
+      $authed = false;
+      $owner = false;
+
+      if ($this->auth->isAuthed()) {
+        $authed = true;
+
+        if ($this->auth->id() == $res->user_id) {
+          $owner = true;
+        }
+      }
+
       $this->views->add('questions/view', [
         'question'  => $res,
         'replies'   => $replies,
         'tags'      => $tags,
+        'owner'     => $owner,
+        'authed'    => $authed,
       ]);
     }
 
@@ -91,6 +110,7 @@ class QuestionController implements \Anax\DI\IInjectionAware
 
       $this->views->add('questions/index', [
         'questions' => $res,
+        'authed' => $this->auth->isAuthed(),
       ]);
     }
 
@@ -120,6 +140,11 @@ class QuestionController implements \Anax\DI\IInjectionAware
      */
     public function createAction()
     {
+      // Make sure that the user is authed
+      if (!$this->auth->isAuthed()) {
+        $this->response->redirect($this->url->create(''));
+      }
+
       $this->theme->setTitle('Ask a question');
 
       if (!empty($_POST)) {
@@ -136,16 +161,23 @@ class QuestionController implements \Anax\DI\IInjectionAware
      */
     private function insert($data)
     {
+      // Make sure that the user is authed
+      if (!$this->auth->isAuthed()) {
+        die('User not authed');
+      }
+
       $this->db->insert(
           'questions',
           [
-              'user_id'  => 1,
+              'user_id'  => $this->auth->id(),
               'title' => $data['title'],
               'body' => $data['body']
           ]
       );
 
       $this->db->execute();
+
+      $this->response->redirect($this->url->create('questions')); // TODO: should redirect to mysql_lastinsertid
     }
 
 }

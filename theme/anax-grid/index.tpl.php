@@ -13,30 +13,41 @@
 
 <body>
 
-<div id='wrapper'>
-
 <div id='header'>
-<?php if(isset($header)) echo $header?>
-<?php $this->views->render('header')?>
+  <div class="container">
+    <?php if(isset($header)) echo $header?>
+    <?php $this->views->render('header')?>
+
+
+    <?php if ($this->views->hasContent('navbar')) : ?>
+      <div id="navbar" class="<?php echo ($this->auth->isAuthed()) ? 'logged-in' : 'logged-out' ?>">
+        <?php $this->views->render('navbar')?>
+      </div>
+    <?php endif; ?>
+
+  </div>
 </div>
 
-<?php if ($this->views->hasContent('navbar')) : ?>
-<div id='navbar'>
-<?php $this->views->render('navbar')?>
-</div>
-<?php endif; ?>
 
 <div id='main'>
-<?php if(isset($main)) echo $main?>
-<?php $this->views->render('main')?>
+  <div class="container">
+
+    <?php if(isset($main)) echo $main?>
+    <?php $this->views->render('main')?>
+
+  </div>
 </div>
 
 <div id='footer'>
-<?php if(isset($footer)) echo $footer?>
-<?php $this->views->render('footer')?>
+  <div class="container">
+
+    <?php if(isset($footer)) echo $footer?>
+    <?php $this->views->render('footer')?>
+
+  </div>
 </div>
 
-</div>
+
 
 <?php if(isset($jquery)):?><script src='<?=$this->url->asset($jquery)?>'></script><?php endif; ?>
 

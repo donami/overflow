@@ -9,7 +9,7 @@ return [
     'table_prefix'    => "stack_",
 
     // Display details on what happens
-    'verbose' => true,
+    'verbose' => false,
 
     // Throw a more verbose exception when failing to connect
     'debug_connect' => 'true',

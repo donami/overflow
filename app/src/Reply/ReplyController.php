@@ -26,7 +26,7 @@ class ReplyController implements \Anax\DI\IInjectionAware
       $this->db->insert(
           'questions_replies',
           [
-              'user_id'  => 1,
+              'user_id'  => $this->auth->id(),
               'question_id' => (int)$data['question_id'],
               'comment_id' => (int)$commentId,
               'body' => $data['reply_comment'],
@@ -44,11 +44,26 @@ class ReplyController implements \Anax\DI\IInjectionAware
      * @return void
      */
     public function acceptAnswerAction($replyId, $questionId)
-    {
+    {    
+      // Fetch the reply data in order to get the user id
+      $this->db
+        ->select('user_id')
+        ->from('questions_replies')
+        ->where('id = ' . $replyId)
+        ->limit(1);
+
+      $this->db->execute();
+      $reply = $this->db->fetchOne();
+
+      if (!$reply) {
+        die('Unable to find the reply');
+      }
+
+      // Update the question
       $this->db->update(
         'questions',
         [
-          'user_answered_id' => 1,
+          'user_answered_id' => $reply->user_id,
           'answered_id' => $replyId,
         ],
         'id = ' . $questionId
@@ -56,12 +71,13 @@ class ReplyController implements \Anax\DI\IInjectionAware
 
       $this->db->execute();
 
+      // Redirect the user
       $this->response->redirect($this->url->create('question?id=' . $questionId));
     }
 
     public function pointAction($replyId, $action)
     {
-      $userId = 1; // TODO: should not be static
+      $userId = $this->auth->id();
 
       $this->db->select('points, question_id')->from('questions_replies');
       $this->db->execute();

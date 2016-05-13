@@ -1,70 +1,82 @@
 <h1>Welcome</h1>
 
-<div>
-  <h3>Most recent questions</h3>
+<div class="box">
 
-  <?php if (empty($recentQuestions)): ?>
+  <div class="title">Most recent questions</div>
 
-    <p>No recent questions found</p>
+  <div class="content">
 
-  <?php else: ?>
+    <?php if (empty($recentQuestions)): ?>
 
-    <?php foreach ($recentQuestions as $question): ?>
+      <p>No recent questions found</p>
 
-      <div>
+    <?php else: ?>
 
-        <a href="<?php echo $this->url->create('question?id=' . $question->id)?>"><?php echo $question->title; ?></a>
+      <?php foreach ($recentQuestions as $question): ?>
 
-      </div>
+        <div>
 
-    <?php endforeach; ?>
+          <a href="<?php echo $this->url->create('question?id=' . $question->id)?>"><?php echo $question->title; ?></a>
 
-  <?php endif; ?>
+        </div>
 
-</div>
+      <?php endforeach; ?>
 
-<div>
-  <h3>Most active users</h3>
+    <?php endif; ?>
 
-  <?php if (empty($activeUsers)): ?>
-
-    <p>No users found</p>
-
-  <?php else: ?>
-
-    <?php foreach ($activeUsers as $user): ?>
-
-      <div>
-
-        <a href="<?php echo $this->url->create('user?id=' . $user->id)?>"><?php echo $user->username; ?></a>
-
-      </div>
-
-    <?php endforeach; ?>
-
-  <?php endif; ?>
+  </div>
 
 </div>
 
-<div>
-  <h3>Popular tags</h3>
 
-  <?php if (empty($popularTags)): ?>
+<div class="box">
 
-    <p>No tags found</p>
+  <div class="title">Most active users</div>
 
-  <?php else: ?>
+  <div class="content">
 
-    <?php foreach ($popularTags as $tag): ?>
+    <?php if (empty($activeUsers)): ?>
 
-      <div>
+      <p>No users found</p>
 
-        <a href="<?php echo $this->url->create('tag?id=' . $tag->id)?>"><?php echo $tag->title; ?></a>
+    <?php else: ?>
 
-      </div>
+      <?php foreach ($activeUsers as $user): ?>
 
-    <?php endforeach; ?>
+        <div>
 
-  <?php endif; ?>
+          <a href="<?php echo $this->url->create('user?id=' . $user->id)?>"><?php echo $user->username; ?></a>
+
+        </div>
+
+      <?php endforeach; ?>
+
+    <?php endif; ?>
+
+  </div>
+
+</div>
+
+<div class="box">
+
+  <div class="title">Popular tags</div>
+
+  <div class="content">
+
+    <?php if (empty($popularTags)): ?>
+
+      <p>No tags found</p>
+
+    <?php else: ?>
+
+      <?php foreach ($popularTags as $tag): ?>
+
+          <a class="tag" href="<?php echo $this->url->create('tag?id=' . $tag->id)?>"><?php echo $tag->title; ?></a>
+
+      <?php endforeach; ?>
+
+    <?php endif; ?>
+
+  </div>
 
 </div>

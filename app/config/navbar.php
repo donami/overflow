@@ -46,6 +46,30 @@ return [
             'title' => 'About page'
         ],
 
+        // This is a menu item
+        'login' => [
+            'text'  => 'Login',
+            'url'   => $this->di->get('url')->create('login'),
+            'title' => 'Login page',
+            'class' => 'login',
+        ],
+
+        // This is a menu item
+        'register' => [
+            'text'  => 'Register',
+            'url'   => $this->di->get('url')->create('register'),
+            'title' => 'Register page',
+            'class' => 'register',
+        ],
+
+        // This is a menu item
+        'logout' => [
+            'text'  => 'Logout',
+            'url'   => $this->di->get('url')->create('logout'),
+            'title' => 'Logout page',
+            'class' => 'logout',
+        ],
+
     ],
 
 

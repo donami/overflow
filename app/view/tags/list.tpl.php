@@ -1,21 +1,30 @@
 <div>
+  
   <h1>View list of tags</h1>
 
-  <div>
-    <?php if (!empty($tags)): ?>
+  <div class="box">
 
-      <?php foreach($tags as $tag): ?>
 
-        <div>
-          <a href="<?php echo $this->url->create('tag?id=' . $tag->id) ?>"><?php echo $tag->title ?></a>
-        </div>
+    <div class="title">Tags</div>
 
-      <?php endforeach; ?>
+    <div class="content">
+      <?php if (!empty($tags)): ?>
 
-    <?php else: ?>
+        <?php foreach($tags as $tag): ?>
 
-      <p>No tags found</p>
+          <div>
+            <a href="<?php echo $this->url->create('tag?id=' . $tag->id) ?>"><?php echo $tag->title ?></a>
+          </div>
 
-    <?php endif; ?>
+        <?php endforeach; ?>
+
+      <?php else: ?>
+
+        <p>No tags found</p>
+
+      <?php endif; ?>
+    </div>
+
   </div>
+
 </div>

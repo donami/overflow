@@ -1,21 +1,29 @@
 <div>
+
   <h1>Display user list</h1>
 
-  <div>
-    <?php if (!empty($users)): ?>
+  <div class="box">
 
-      <?php foreach($users as $user): ?>
+    <div class="title">Users</div>
 
-        <div>
-          <a href="<?php echo $this->url->create('user?id=' . $user->id) ?>"><?php echo $user->username ?></a>
-        </div>
+    <div class="content">
+      <?php if (!empty($users)): ?>
 
-      <?php endforeach; ?>
+        <?php foreach($users as $user): ?>
 
-    <?php else: ?>
+          <div>
+            <a href="<?php echo $this->url->create('user?id=' . $user->id) ?>"><?php echo $user->username ?></a>
+          </div>
 
-      <p>No users found</p>
+        <?php endforeach; ?>
 
-    <?php endif; ?>
+      <?php else: ?>
+
+        <p>No users found</p>
+
+      <?php endif; ?>
+    </div>
+
   </div>
+
 </div>

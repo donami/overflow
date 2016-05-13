@@ -10,12 +10,29 @@ $app->theme->configure(ANAX_APP_PATH . 'config/theme-grid.php');
 // Load the navbar configuration
 $app->navbar->configure(ANAX_APP_PATH . 'config/navbar.php');
 
+// For good forms
+$di->set('form', '\Mos\HTMLForm\CForm');
+
 // Database handling
 $di->setShared('db', function() {
     $db = new \Mos\Database\CDatabaseBasic();
     $db->setOptions(require ANAX_APP_PATH . 'config/config_db.php');
     $db->connect();
     return $db;
+});
+
+// User authentication handling
+$di->setShared('auth', function() use ($di) {
+    $auth = new \donami\Auth\CAuth();
+    $auth->setDI($di);
+    return $auth;
+});
+
+$di->set('Flash', function() use ($di) {
+  $flash = new Anax\Flash\CFlashBasic();
+  $flash->setDI($di);
+
+  return $flash;
 });
 
 // Question controller
@@ -42,6 +59,20 @@ $di->set('TagController', function() use($di) {
 // User controller
 $di->set('UserController', function() use($di) {
   $controller = new donami\User\UserController();
+  $controller->setDI($di);
+  return $controller;
+});
+
+// Auth controller
+$di->set('AuthController', function() use($di) {
+  $controller = new donami\Auth\AuthController();
+  $controller->setDI($di);
+  return $controller;
+});
+
+// Register controller
+$di->set('RegisterController', function() use($di) {
+  $controller = new donami\Auth\RegisterController();
   $controller->setDI($di);
   return $controller;
 });
@@ -229,6 +260,43 @@ $app->router->add('about', function() use ($app) {
       'action' => 'view',
     ]);
 
+});
+
+// Register route
+$app->router->add('register', function() use ($app) {
+
+  $app
+    ->dispatcher
+    ->forward([
+      'controller' => 'register',
+      'action' => 'view',
+    ]);
+
+});
+
+// Login route
+$app->router->add('login', function() use ($app) {
+
+  $app
+    ->dispatcher
+    ->forward([
+      'controller' => 'auth',
+      'action' => 'loginView',
+    ]);
+
+});
+
+// Logout route
+$app->router->add('logout', function() use ($app) {
+
+  $app
+    ->dispatcher
+    ->forward([
+      'controller' => 'auth',
+      'action' => 'logout',
+    ]);
+
+  $app->response->redirect($app->url->create($_SERVER['HTTP_REFERER']));
 });
 
 $app->router->handle();
