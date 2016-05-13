@@ -15,14 +15,14 @@
 
       <div class="left">
 
-        <img class="profile" src="http://cdn.devilsworkshop.org/files/2013/01/enlarged-facebook-profile-picture.jpg" alt="Profile picture">
+        <a href="<?php echo $this->url->create('user?id=' . $question->user_id)?>"><img class="profile" src="http://cdn.devilsworkshop.org/files/2013/01/enlarged-facebook-profile-picture.jpg" alt="Profile picture"></a>
 
       </div>
 
       <div class="right">
         <span class="date-asked"><?php echo $question->date_created ?></span>
 
-        <a class="username" href="<?php echo $this->url->create('user?id=' . $question->user_id)?>">Markus</a>
+        <a class="username" href="<?php echo $this->url->create('user?id=' . $question->user_id)?>"><?php echo $question->username ?></a>
 
         <ul>
           <li><i class="fa fa-star fa-lg fa-fw"></i> &nbsp; Points: 10</li>
@@ -77,7 +77,7 @@
           <div class="left">
 
             <div class="image">
-              <img class="profile" src="http://cdn.devilsworkshop.org/files/2013/01/enlarged-facebook-profile-picture.jpg" alt="Profile picture">
+              <a href="<?php echo $this->url->create('user?id=' . $reply['main']['user_id'])?>"><img class="profile" src="http://cdn.devilsworkshop.org/files/2013/01/enlarged-facebook-profile-picture.jpg" alt="Profile picture"></a>
             </div>
 
             <div>
@@ -137,7 +137,7 @@
                 <div class="left">
 
                   <div class="image">
-                    <img class="profile" src="http://cdn.devilsworkshop.org/files/2013/01/enlarged-facebook-profile-picture.jpg" alt="Profile picture">
+                    <a href="<?php echo $this->url->create('user?id=' . $comment['user_id'])?>"><img class="profile" src="http://cdn.devilsworkshop.org/files/2013/01/enlarged-facebook-profile-picture.jpg" alt="Profile picture"></a>
                   </div>
 
                   <div>
