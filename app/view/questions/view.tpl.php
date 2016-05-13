@@ -174,7 +174,7 @@
         <?php if ($authed): ?>
 
           <div class="add-comment">
-            add comment
+            <h3>Reply to this comment</h3>
 
             <div>
               <form action="reply/create" method="POST">
@@ -186,6 +186,7 @@
                 <button type="submit">Reply</button>
               </form>
             </div>
+
           </div>
 
         <?php endif; ?>
