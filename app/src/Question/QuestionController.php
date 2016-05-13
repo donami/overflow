@@ -166,6 +166,20 @@ class QuestionController implements \Anax\DI\IInjectionAware
         die('User not authed');
       }
 
+      $title = trim($data['title']);
+      $body = trim($data['body']);
+
+      // Make sure that title is defined
+      if (empty($title)) {
+        die("You cannot leave title empty");
+      }
+
+      // Make sure that body is defined
+      if (empty($body)) {
+        die("You cannot leave the question field empty");
+      }
+
+      // Query for inserting question data
       $this->db->insert(
           'questions',
           [
@@ -177,7 +191,11 @@ class QuestionController implements \Anax\DI\IInjectionAware
 
       $this->db->execute();
 
-      $this->response->redirect($this->url->create('questions')); // TODO: should redirect to mysql_lastinsertid
+      // The new questions id
+      $questionId = $this->db->lastInsertId();
+
+      // Redirect to the created question
+      $this->response->redirect($this->url->create('question?id=' . $questionId));
     }
 
 }

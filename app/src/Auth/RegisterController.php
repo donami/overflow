@@ -62,6 +62,8 @@ class RegisterController extends RegisterForm implements \Anax\DI\IInjectionAwar
           ]
         );
 
+      $this->db->execute();
+
       return true;
     }
 
