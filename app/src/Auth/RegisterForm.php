@@ -21,7 +21,7 @@ class RegisterForm extends \Mos\HTMLForm\CForm
             // 'validation'  => ['not_empty', 'email_adress'],
         ],
         'email' => [
-            'type'        => 'text',
+            'type'        => 'email',
             'label'       => 'Email', // TODO: should be email field, and required fields
             // 'required'    => true,
             // 'validation'  => ['not_empty', 'email_adress'],
@@ -58,7 +58,7 @@ class RegisterForm extends \Mos\HTMLForm\CForm
       'password' => $form->Value('password'),
       'email' => $form->Value('email'),
     ];
-    
+
     if ($this->submitForm($data)) {
       return true;
     }
