@@ -154,10 +154,30 @@ class QuestionController implements \Anax\DI\IInjectionAware
       $this->theme->setTitle('Ask a question');
 
       if (!empty($_POST)) {
-          $this->insert($_POST);
+          $tags = $this->getTagsFromString($_POST['tags']);
+
+          $this->insert($_POST, $tags);
       }
 
       $this->views->add('questions/create', []);
+    }
+
+
+    /**
+     * Create an array of tags from a string
+     *
+     * @param  string $string
+     * @return array
+     */
+    private function getTagsFromString($string)
+    {
+      // Make sure there are no spaces
+      $string = str_replace(", ", ",", $string);
+
+      // Pick out the tags in to an array
+      $tags = explode(",", $string);
+
+      return $tags;
     }
 
     /**
@@ -165,7 +185,7 @@ class QuestionController implements \Anax\DI\IInjectionAware
      * @param  array $data
      * @return void
      */
-    private function insert($data)
+    private function insert($data, $tags)
     {
       // Make sure that the user is authed
       if (!$this->auth->isAuthed()) {
@@ -195,10 +215,45 @@ class QuestionController implements \Anax\DI\IInjectionAware
           ]
       );
 
-      $this->db->execute();
+      // If query was succesfull
+      if ($this->db->execute()) {
+        // The new questions id
+        $questionId = $this->db->lastInsertId();
 
-      // The new questions id
-      $questionId = $this->db->lastInsertId();
+        // Loop through the tags
+        foreach ($tags as $tag) {
+
+          // Check if tag already exists. If it does the id
+          // will be fetched otherwise create a new row
+          $check = $this->db->select('id')->from('tags')->where('title = "' . $tag . '"')->limit(1);
+          $this->db->execute();
+          $exists = $this->db->fetchOne();
+
+          // If the tag already exists
+          if ($exists) {
+            $tagId = $exists->id;
+          }
+          else {
+            // Create the tag incase it doesnt exist
+            $this->db->insert('tags', ['title' => $tag]);
+            $this->db->execute();
+
+            $tagId = $this->db->lastInsertId();
+          }
+
+          $this->db->insert(
+            'questions_tags',
+            [
+              'tag_id' => $tagId,
+              'question_id' => $questionId,
+            ]
+          );
+
+          $this->db->execute();
+
+        }
+
+      }
 
       // Redirect to the created question
       $this->response->redirect($this->url->create('question?id=' . $questionId));

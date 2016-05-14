@@ -10,11 +10,18 @@
       <form action="create" method="POST">
 
         <div>
-          <input type="text" name="title" placeholder="Title"/>
+          <label for="title">Tags (seperate with comma)</label>
+          <input type="text" name="title" placeholder="Title" id="title"/>
         </div>
 
         <div>
-          <textarea name="body" cols="30" rows="10" placeholder="Message"></textarea>
+          <label for="body">Tags (seperate with comma)</label>
+          <textarea name="body" id="body" cols="30" rows="10" placeholder="Message"></textarea>
+        </div>
+
+        <div>
+          <label for="tags">Tags</label>
+          <input type="text" id="tags" name="tags" placeholder="Seperate with comma" />
         </div>
 
         <div>

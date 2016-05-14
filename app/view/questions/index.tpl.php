@@ -28,10 +28,10 @@
 
           <div>
             <h4>
-              <a href="<?php echo $this->url->create('question?id=' . $question->id)?>"><?php echo $question->title ?></a>
+              <a href="<?php echo $this->url->create('question?id=' . $question->id)?>"><?php echo htmlspecialchars($question->title) ?></a>
             </h4>
             <p>
-              <?php echo $question->body ?>
+              <?php echo htmlspecialchars($question->body) ?>
             </p>
           </div>
 
