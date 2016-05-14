@@ -10,12 +10,12 @@
       <form action="create" method="POST">
 
         <div>
-          <label for="title">Tags (seperate with comma)</label>
+          <label for="title">Title</label>
           <input type="text" name="title" placeholder="Title" id="title"/>
         </div>
 
         <div>
-          <label for="body">Tags (seperate with comma)</label>
+          <label for="body">Question</label>
           <textarea name="body" id="body" cols="30" rows="10" placeholder="Message"></textarea>
         </div>
 
