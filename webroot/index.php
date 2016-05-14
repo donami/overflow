@@ -166,6 +166,20 @@ $app->router->add('question/delete', function() use($app) {
     ]);
 });
 
+// Edit question route
+$app->router->add('question/edit', function() use($app) {
+
+  $questionId = $app->request->getGet('id');
+
+  $app
+    ->dispatcher
+    ->forward([
+      'controller' => 'question',
+      'action' => 'edit',
+      'params' => [$questionId],
+    ]);
+});
+
 // View tag list route
 $app->router->add('tags', function() use ($app) {
   $app

@@ -181,6 +181,26 @@ class QuestionController implements \Anax\DI\IInjectionAware
     }
 
     /**
+     * Get a string from array of tags
+     *
+     * @param  object $tags
+     * @return string
+     */
+    private function getStringFromTags($tags)
+    {
+      // Need to create an array since $tags is and object
+      $array = [];
+      foreach ($tags as $tag) {
+        $array[] = $tag->title;
+      }
+
+      // Turn the array into one string. Each tag divided by a comma and space
+      $string = implode($array, ', ');
+
+      return $string;
+    }
+
+    /**
      * Save new question
      * @param  array $data
      * @return void
@@ -223,33 +243,7 @@ class QuestionController implements \Anax\DI\IInjectionAware
         // Loop through the tags
         foreach ($tags as $tag) {
 
-          // Check if tag already exists. If it does the id
-          // will be fetched otherwise create a new row
-          $check = $this->db->select('id')->from('tags')->where('title = "' . $tag . '"')->limit(1);
-          $this->db->execute();
-          $exists = $this->db->fetchOne();
-
-          // If the tag already exists
-          if ($exists) {
-            $tagId = $exists->id;
-          }
-          else {
-            // Create the tag incase it doesnt exist
-            $this->db->insert('tags', ['title' => $tag]);
-            $this->db->execute();
-
-            $tagId = $this->db->lastInsertId();
-          }
-
-          $this->db->insert(
-            'questions_tags',
-            [
-              'tag_id' => $tagId,
-              'question_id' => $questionId,
-            ]
-          );
-
-          $this->db->execute();
+          $this->manageTag($tag, $questionId);
 
         }
 
@@ -257,6 +251,49 @@ class QuestionController implements \Anax\DI\IInjectionAware
 
       // Redirect to the created question
       $this->response->redirect($this->url->create('question?id=' . $questionId));
+    }
+
+    /**
+     * Handle the tag. If tag already exist fetch the id
+     * of the tag. Else create a new one
+     *
+     * @param string $tag
+     * @param int $questionId
+     * @return void
+     */
+    private function manageTag($tag, $questionId)
+    {
+      if (empty($tag)) {
+        return false;
+      }
+      // Check if tag already exists. If it does the id
+      // will be fetched otherwise create a new row
+      $check = $this->db->select('id')->from('tags')->where('title = "' . $tag . '"')->limit(1);
+      $this->db->execute();
+      $exists = $this->db->fetchOne();
+
+      // If the tag already exists
+      if ($exists) {
+        $tagId = $exists->id;
+      }
+      else {
+        // Create the tag incase it doesnt exist
+        $this->db->insert('tags', ['title' => $tag]);
+        $this->db->execute();
+
+        $tagId = $this->db->lastInsertId();
+      }
+
+      $this->db->insert(
+        'questions_tags',
+        [
+          'tag_id' => $tagId,
+          'question_id' => $questionId,
+        ]
+      );
+
+      $this->db->execute();
+
     }
 
     /**
@@ -281,6 +318,88 @@ class QuestionController implements \Anax\DI\IInjectionAware
     public function delete($questionId)
     {
       $this->db->delete('questions', 'id = ' . $questionId);
+
+      return $this->db->execute();
+    }
+
+    /**
+     * The edit action
+     *
+     * @param  int $questionId
+     * @return void
+     */
+    public function editAction($questionId = null)
+    {
+      $this->theme->setTitle('Edit question');
+
+      if (!empty($_POST)) {
+        $questionId = $_POST['id'];
+
+        // If update was succesfull, redirect user
+        if ($this->update($_POST['id'], $_POST)) {
+          $this->response->redirect($this->url->create('question?id=' . $questionId));
+        }
+      }
+
+      // Select the question
+      $this->db
+        ->select()
+        ->from('questions')
+        ->where('id = "' . $questionId . '"');
+
+      $this->db->execute();
+      $res = $this->db->fetchOne();
+
+      // Get the tags
+      $this->db
+        ->select('T.id, T.title AS title')
+        ->from('questions_tags AS QT')
+        ->join('tags AS T', 'T.id = QT.tag_id')
+        ->where('question_id = "' . $questionId . '"');
+      $tags = $this->db->executeFetchAll();
+
+
+      if (!$res) {
+        die('Unable to find question');
+      }
+
+      $this->views->add('questions/edit', [
+        'question' => $res,
+        'tags'     => $this->getStringFromTags($tags),
+      ]);
+    }
+
+    /**
+     * Update the database with new data
+     *
+     * @param  int $questionId
+     * @return boolean
+     */
+    private function update($questionId, $data)
+    {
+      // Clear tags before updating
+      $this->db
+        ->delete('questions_tags', 'question_id = "' . $questionId . '"');
+      $this->db->execute();
+
+      // Get array of tags from the data string
+      $tags = $this->getTagsFromString($data['tags']);
+
+      // Loop through the tags and handle the tag action
+      foreach ($tags as $tag) {
+        $this->manageTag($tag, $questionId);
+      }
+
+      // Update the data
+      $this->db
+        ->update(
+          'questions',
+          [
+            'title' => $data['title'],
+            'body' => $data['body'],
+          ],
+          'id = "' . $questionId . '"'
+        );
 
       return $this->db->execute();
     }

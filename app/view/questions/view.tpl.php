@@ -33,6 +33,7 @@
 
         <?php if ($admin): ?>
           <div class="actions">
+            <a class="btn btn-accept" href="<?php echo $this->url->create('question/edit?id=' . $question->id)?>">Edit</a>
             <a class="btn btn-warning" href="<?php echo $this->url->create('question/delete?id=' . $question->id)?>">Delete</a>
           </div>
         <?php endif ?>
