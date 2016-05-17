@@ -26,13 +26,13 @@ class CAuth
 
   public function id()
   {
-    return $this->di->session->get('user')->id;
+    return $this->di->session->get('user')->getId();
   }
 
   public function isAdmin()
   {
     if ($this->isAuthed()) {
-      if ($this->di->session->get('user')->admin) {
+      if ($this->di->session->get('user')->getAdmin()) {
         return true;
       }
     }

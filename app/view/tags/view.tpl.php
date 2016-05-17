@@ -1,5 +1,6 @@
 <div>
-  <h1>Tag: <?php echo $tag->title ?></h1>
+  <h1>Tag: <?php echo $tag[0]->getTitle() ?></h1>
+
 
   <h3>Questions with this tag:</h3>
   <div>
@@ -13,7 +14,7 @@
 
         <div>
 
-          <a href="<?php echo $this->url->create('question?id=' . $question->id) ?>"><?php echo $question->title ?> </a>
+          <a href="<?php echo $this->url->create('question?id=' . $question->getId()) ?>"><?php echo $question->getTitle() ?> </a>
 
         </div>
 

@@ -11,12 +11,12 @@
 
         <div>
           <label for="title">Title</label>
-          <input type="text" name="title" placeholder="Title" id="title" value="<?php echo $question->title ?>"/>
+          <input type="text" name="title" placeholder="Title" id="title" value="<?php echo $question->getTitle() ?>"/>
         </div>
 
         <div>
           <label for="body">Question</label>
-          <textarea name="body" id="body" cols="30" rows="10" placeholder="Message"><?php echo $question->body ?></textarea>
+          <textarea name="body" id="body" cols="30" rows="10" placeholder="Message"><?php echo $question->getBody() ?></textarea>
         </div>
 
         <div>
@@ -25,7 +25,7 @@
         </div>
 
         <div>
-          <input type="hidden" name="id" value="<?php echo $question->id ?>">
+          <input type="hidden" name="id" value="<?php echo $question->getId() ?>">
           <button type="submit">Save</button>
         </div>
 

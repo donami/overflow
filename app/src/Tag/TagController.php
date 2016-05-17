@@ -19,24 +19,27 @@ class TagController implements \Anax\DI\IInjectionAware
 
       // Get the tag ID from url
       $tagId = $this->request->getGet('id');
+      $title = $this->request->getGet('tag');
 
       // Fetch the tag from database
-      $this->db->select()->from('tags')->where('id = ' . $tagId);
-      $this->db->execute();
-      $res = $this->db->fetchOne();
+      $tag = $this->entityManager->getRepository('\donami\Tag\Tag')->findBy(['title' => $title]);
 
-      // Get questions with this tag
-      $this->db->select("Q.title, Q.id")
-          ->from('questions AS Q')
-          ->leftJoin('questions_tags AS QT', 'Q.id = QT.question_id')
-          ->leftJoin('tags AS T', 'T.id = QT.tag_id')
-          ->where('QT.tag_id = ' . $tagId);
+      $questions = [];
 
-      $questions = $this->db->executeFetchAll();
+      if (!empty($tag)) {
+        foreach ($tag as $value) {
+          if (!empty($value)) {
+            foreach ($value->getQuestions() as $q) {
+              $questions[] = $q;
+            }
+          }
+        }
+      }
 
       // Create the view
       $this->views->add('tags/view', [
-        'tag' => $res,
+        'tag' => $tag,
+        // 'questions' => $tag->getQuestions(),
         'questions' => $questions,
       ]);
     }
@@ -50,13 +53,19 @@ class TagController implements \Anax\DI\IInjectionAware
     {
       $this->theme->setTitle('Tags');
 
-      // Fetch tags from database
-      $this->db->select()->from('tags');
-      $res = $this->db->executeFetchAll();
+      $queryBuilder = $this->entityManager->createQueryBuilder();
+
+      $query = $queryBuilder
+                ->select('t')
+                ->from('\donami\Tag\Tag', 't')
+                ->groupBy('t.title')
+                ->getQuery();
+
+      $tags = $query->getResult();
 
       // Create the view
       $this->views->add('tags/list', [
-        'tags' => $res,
+        'tags' => $tags,
       ]);
     }
 
@@ -68,21 +77,17 @@ class TagController implements \Anax\DI\IInjectionAware
      */
     public function getPopularAction($limit = 10)
     {
-      $this->db
-        ->select('
-          QT.tag_id AS id,
-          COUNT(QT.tag_id) AS count,
-          T.title
-        ')
-        ->from('questions_tags AS QT')
-        ->join('tags AS T', 'T.id = QT.tag_id')
-        ->groupBy('tag_id')
-        ->orderBy('count DESC')
-        ->limit($limit);
 
-      $res = $this->db->executeFetchAll();
+      $queryBuilder = $this->entityManager->createQueryBuilder();
 
-      return $res;
+      $query = $queryBuilder
+                ->select('t')
+                ->from('\donami\Tag\Tag', 't')
+                ->groupBy('t.title')
+                ->getQuery();
+
+      return $query->getResult();
     }
+
 
 }

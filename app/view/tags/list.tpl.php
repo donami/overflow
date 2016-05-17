@@ -1,5 +1,5 @@
 <div>
-  
+
   <h1>View list of tags</h1>
 
   <div class="box">
@@ -13,7 +13,7 @@
         <?php foreach($tags as $tag): ?>
 
           <div>
-            <a href="<?php echo $this->url->create('tag?id=' . $tag->id) ?>"><?php echo $tag->title ?></a>
+            <a href="<?php echo $this->url->create('tag?tag=' . $tag->getTitle()) ?>"><?php echo $tag->getTitle() ?></a>
           </div>
 
         <?php endforeach; ?>

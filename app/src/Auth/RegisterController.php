@@ -33,36 +33,19 @@ class RegisterController extends RegisterForm implements \Anax\DI\IInjectionAwar
      */
     public function submitForm($data = array())
     {
-      // Check if username is taken
-      $checkUsername = $this->db->select(1)->from('users')->where('username = "' . $data['username'] . '"');
-      $this->db->execute();
-      $usernameExists = $this->db->fetchOne();
 
-      // Check if email is taken
-      $checkEmail = $this->db->select(1)->from('users')->where('email = "' . $data['email'] . '"');
-      $this->db->execute();
-      $emailExists = $this->db->fetchOne();
+      try {
+        $user = new \donami\User\User;
+        $user->setUsername(trim($data['username']));
+        $user->setPassword(trim($data['password']));
+        $user->setEmail(trim($data['email']));
 
-      if ($usernameExists) {
-        die('Username already taken');
+        $this->entityManager->persist($user);
+        $this->entityManager->flush();
+      } catch (\Exception $e) {
+        die($e->getMessage());
+
       }
-
-      if ($emailExists) {
-        die('Email already exists');
-      }
-
-
-      $this->db
-        ->insert(
-          'users',
-          [
-            'username'  => $data['username'],
-            'password'  => $data['password'],
-            'email'     => $data['email'],
-          ]
-        );
-
-      $this->db->execute();
 
       return true;
     }

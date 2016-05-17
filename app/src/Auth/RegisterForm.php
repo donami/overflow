@@ -22,7 +22,7 @@ class RegisterForm extends \Mos\HTMLForm\CForm
         ],
         'email' => [
             'type'        => 'email',
-            'label'       => 'Email', // TODO: should be email field, and required fields
+            'label'       => 'Email', // TODO: Should be required fields
             // 'required'    => true,
             // 'validation'  => ['not_empty', 'email_adress'],
         ],

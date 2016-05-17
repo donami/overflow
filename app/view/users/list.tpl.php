@@ -12,7 +12,7 @@
         <?php foreach($users as $user): ?>
 
           <div>
-            <a href="<?php echo $this->url->create('user?id=' . $user->id) ?>"><?php echo $user->username ?></a>
+            <a href="<?php echo $this->url->create('user?id=' . $user->getId()) ?>"><?php echo $user->getUsername() ?></a>
           </div>
 
         <?php endforeach; ?>

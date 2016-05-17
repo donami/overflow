@@ -16,7 +16,7 @@
 
         <div>
 
-          <a href="<?php echo $this->url->create('question?id=' . $question->id)?>"><?php echo $question->title; ?></a>
+          <a href="<?php echo $this->url->create('question?id=' . $question->getId())?>"><?php echo $question->getTitle(); ?></a>
 
         </div>
 
@@ -27,7 +27,6 @@
   </div>
 
 </div>
-
 
 <div class="box">
 
@@ -45,7 +44,7 @@
 
         <div>
 
-          <a href="<?php echo $this->url->create('user?id=' . $user->id)?>"><?php echo $user->username; ?></a>
+          <a href="<?php echo $this->url->create('user?id=' . $user->getId())?>"><?php echo $user->getUsername(); ?></a>
 
         </div>
 
@@ -71,7 +70,7 @@
 
       <?php foreach ($popularTags as $tag): ?>
 
-          <a class="tag" href="<?php echo $this->url->create('tag?id=' . $tag->id)?>"><?php echo $tag->title; ?></a>
+          <a class="tag" href="<?php echo $this->url->create('tag?tag=' . $tag->getTitle())?>"><?php echo $tag->getTitle(); ?></a>
 
       <?php endforeach; ?>
 

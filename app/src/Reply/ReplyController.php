@@ -22,134 +22,141 @@ class ReplyController implements \Anax\DI\IInjectionAware
         die("You cannot leave the comment field empty");
       }
 
-      if (!isset($data['comment_id'])) {
-        $this->db->insert(
-            'questions_replies',
-            [
-                'user_id'  => $this->auth->id(),
-                'question_id' => (int)$data['question_id'],
-                'body' => $data['reply_comment'],
-            ]
-        );
-      }
-      else {
-        $this->db->insert(
-            'questions_replies',
-            [
-                'user_id'  => $this->auth->id(),
-                'question_id' => (int)$data['question_id'],
-                'comment_id' => (int)$data['comment_id'],
-                'body' => $data['reply_comment'],
-            ]
-        );
-      }
+      $question = $this->entityManager->getRepository('\donami\Question\Question')->find($data['question_id']);
+      $user = $this->entityManager->getRepository('\donami\User\User')->find($this->auth->id());
 
-      $this->db->execute();
+      $answer = new \donami\Answer\Answer;
+      $answer->setBody($body);
+
+      $answer->addUser($user);
+      $answer->assignToQuestion($question);
+
+      $this->entityManager->persist($answer);
+      $this->entityManager->flush();
 
       $this->response->redirect($this->url->create('question?id=' . $data['question_id']));
+
+    }
+
+    public function createCommentAction($data)
+    {
+      $body = trim($data['reply_comment']);
+
+      if (empty($body)) {
+        die("You cannot leave the comment field empty");
+      }
+
+      $user = $this->entityManager->getRepository('\donami\User\User')->find($this->auth->id());
+      $answer = $this->entityManager->getRepository('\donami\Answer\Answer')->find($data['comment_id']);
+
+      $comment = new \donami\Comment\Comment;
+      $comment->setBody($body);
+
+      $comment->addUser($user);
+      $comment->assignToAnswer($answer);
+
+      $this->entityManager->persist($comment);
+      $this->entityManager->flush();
+
+      $this->response->redirect($this->url->create('question?id=' . $answer->getQuestion()->getId()));
     }
 
     /**
      * Mark a reply as answer for question
      * @param  int $replyId
+     * @param  int $questionId
      * @return void
      */
     public function acceptAnswerAction($replyId, $questionId)
     {
-      // Fetch the reply data in order to get the user id
-      $this->db
-        ->select('user_id')
-        ->from('questions_replies')
-        ->where('id = ' . $replyId)
-        ->limit(1);
-
-      $this->db->execute();
-      $reply = $this->db->fetchOne();
-
-      if (!$reply) {
-        die('Unable to find the reply');
+      // Fetch the answer
+      if (!$answer = $this->entityManager->getRepository('\donami\Answer\Answer')->find($replyId)) {
+        die('Unable to find answer');
       }
 
-      // Update the question
-      $this->db->update(
-        'questions',
-        [
-          'user_answered_id' => $reply->user_id,
-          'answered_id' => $replyId,
-        ],
-        'id = ' . $questionId
-      );
+      if (!$question = $this->entityManager->getRepository('\donami\Question\Question')->find($questionId)) {
+        die('Unable to find question');
+      }
 
-      $this->db->execute();
+      $question->setBestAnswer($answer);
+      $question->setBestAnswerUser($answer->getUser()->getId());
+
+      $this->entityManager->persist($question);
+      $this->entityManager->flush();
 
       // Redirect the user
       $this->response->redirect($this->url->create('question?id=' . $questionId));
     }
 
-    public function pointAction($replyId, $action)
+    public function pointAction($answerId, $action)
     {
-      $userId = $this->auth->id();
+      $answer = $this->entityManager->getRepository('\donami\Answer\Answer')->find($answerId);
+      $questionId = $answer->getQuestion()->getId();
 
-      $this->db->select('points, question_id')->from('questions_replies');
-      $this->db->execute();
+      // Handle updating of points
+      $this->updatePoint($answer, $action);
 
-      $reply = $this->db->fetchOne();
+      // Redirect the user back
+      $this->response->redirect($this->url->create('question?id=' . $questionId));
+    }
 
-      $points = ($action == 'increase') ? (int)$reply->points + 1 : (int)$reply->points - 1;
+    /**
+     * Handling of points
+     * @param  \donami\Answer\Answer $answer
+     * @param  string $action        Accepted values: "increase" or "decrease"
+     *
+     * @return boolean
+     */
+    public function updatePoint($answer, $action)
+    {
+      // Get the user
+      $user = $this->entityManager->getRepository('\donami\User\User')->find($this->auth->id());
 
-      // Check if user already has voted
-      $this->db->select('id, action')->from('questions_points')->where('reply_id = ' . $replyId . ' && user_id = ' . $userId);
-      $this->db->execute();
-      $check = $this->db->fetchOne();
+      // Check if user has voted on this answer
+      $exists = $this->entityManager->getRepository('\donami\Point\Point')->findOneBy(['user' => $user, 'answer' => $answer]);
 
-      // If the user has already voted he should
-      // not be able to to the same action again
-      if (!empty($check)) {
-        if ($check->action === 'increase') {
-          if ($action == 'increase') {
-            die('Already voted');
-          }
-          else {
-            $this->db->delete('questions_points', 'id = ' . $check->id);
-            $this->db->execute();
-          }
-        }
-        if ($check->action === 'decrease') {
-          if ($action == 'decrease') {
-            die('Already voted');
-          }
-          else {
-            $this->db->delete('questions_points', 'id = ' . $check->id);
-            $this->db->execute();
-          }
+      // If user already has voted on answer
+      if ($exists) {
+        // Return false if user already voted the same way
+        // Otherwise "reset" points
+        if ($action == $exists->getAction()) {
+          return false;
         }
 
+        if ($action == 'increase') {
+          $answer->incrementRating();
+        }
+        else {
+          $answer->decrementRating();
+        }
+        // Remove the vote in order to "reset"
+        $this->entityManager->persist($answer);
+        $this->entityManager->flush();
+
+
+        // Remove the vote in order to "reset"
+        $this->entityManager->remove($exists);
+        $this->entityManager->flush();
+
+        return true;
       }
 
-      $this->db->update(
-        'questions_replies',
-        [
-          'points' => $points
-        ],
-        'id = ' . $replyId
-      );
+      $point = new \donami\Point\Point;
+      $point->setUser($user);
+      $point->setAnswer($answer);
+      $point->setAction($action);
 
-      $this->db->execute();
-
-      // Only insert to database if it wasn't a "reset" of the points
-      if (empty($check)) {
-        $this->db->insert(
-          'questions_points',
-          [
-            'user_id' => $userId,
-            'reply_id' => $replyId,
-            'action' => $action,
-          ]
-        );
-        $this->db->execute();
+      if ($action == 'increase') {
+        $answer->incrementRating();
+      }
+      else {
+        $answer->decrementRating();
       }
 
-      $this->response->redirect($this->url->create('question?id=' . $reply->question_id));
+      $this->entityManager->persist($point);
+      $this->entityManager->flush();
+
+      return true;
     }
 
     /**
@@ -160,9 +167,19 @@ class ReplyController implements \Anax\DI\IInjectionAware
      */
     public function deleteAction($replyId)
     {
-      $this->db->delete('questions_replies', 'id = ' . $replyId);
+      $answer = $this->entityManager->getRepository('\donami\Answer\Answer')->find($replyId);
 
-      return $this->db->execute();
+      // Check if this answer was accepted as the best answer
+      if ($answer == $answer->getQuestion()->getBestAnswer()) {
+        $answer->getQuestion()->setBestAnswerUser(NULL);
+
+        $this->entityManager->persist($answer);
+      }
+
+      $this->entityManager->remove($answer);
+      $this->entityManager->flush();
+
+      $this->response->redirect($this->url->create('question?id=' . $answer->getQuestion()->getId()));
     }
 
 }

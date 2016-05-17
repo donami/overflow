@@ -13,6 +13,11 @@ $app->navbar->configure(ANAX_APP_PATH . 'config/navbar.php');
 // For good forms
 $di->set('form', '\Mos\HTMLForm\CForm');
 
+$loader = new Twig_Loader_Filesystem(ANAX_APP_PATH . 'view');
+$twig = new Twig_Environment($loader, array(
+    'views' => ANAX_APP_PATH . 'view/cache',
+));
+
 // Database handling
 $di->setShared('db', function() {
     $db = new \Mos\Database\CDatabaseBasic();
@@ -34,6 +39,9 @@ $di->set('Flash', function() use ($di) {
 
   return $flash;
 });
+
+$di->set('entityManager', $entityManager);
+$di->set('twig', $twig);
 
 // Question controller
 $di->set('QuestionController', function() use($di) {
@@ -111,6 +119,7 @@ $app->router->add('', function() use ($app) {
       'action' => 'getPopular',
       'params' => [10],
     ]);
+
 
     $app->views->add('welcome/index', [
       'recentQuestions' => $recent,
@@ -291,6 +300,19 @@ $app->router->add('reply/create', function() use ($app) {
     ->forward([
       'controller' => 'reply',
       'action' => 'create',
+      'params' => [$_POST]
+    ]);
+
+});
+
+// Post create reply route
+$app->router->add('comment/create', function() use ($app) {
+
+  $app
+    ->dispatcher
+    ->forward([
+      'controller' => 'reply',
+      'action' => 'createComment',
       'params' => [$_POST]
     ]);
 

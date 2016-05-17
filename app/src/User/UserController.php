@@ -21,38 +21,16 @@ class UserController implements \Anax\DI\IInjectionAware
       $userId = $this->request->getGet('id');
 
       // Fetch the user from database
-      $this->db->select()->from('users')->where('id = ' . $userId);
-      $this->db->execute();
-      $res = $this->db->fetchOne();
-
-      // Fetch users questions
-      $this->db->select()
-        ->from('questions')
-        ->where('user_id = ' . $userId);
-      $questions = $this->db->executeFetchAll();
-
-      // Fetch answered questions by this user
-      $this->db
-        ->select('Q.title AS question_title, Q.id AS question_id')
-        ->join('questions AS Q', 'Q.id = QR.question_id')
-        ->from('questions_replies AS QR')
-        ->where('QR.user_id = ' . $userId . ' && QR.comment_id = 0');
-
-      $answers = $this->db->executeFetchAll();
+      $user = $this->entityManager->getRepository('\donami\User\User')->find($userId);
 
       // Fetch answers that has been accepted as best answer
-      $this->db
-        ->select()
-        ->from('questions')
-        ->where('user_answered_id = ' . $userId);
-
-      $bestAnswers = $this->db->executeFetchAll();
+      $bestAnswers = $this->entityManager->getRepository('\donami\Question\Question')->findBy(['best_answer_user' => $userId]);
 
       // Create the view
       $this->views->add('users/view', [
-        'user' => $res,
-        'questions' => $questions,
-        'answers' => $answers,
+        'user' => $user,
+        'questions' => $user->getQuestions(),
+        'answers' => $user->getAnswers(),
         'bestAnswers' => $bestAnswers,
       ]);
     }
@@ -67,12 +45,11 @@ class UserController implements \Anax\DI\IInjectionAware
       $this->theme->setTitle('Display user list');
 
       // Fetch tags from database
-      $this->db->select()->from('users');
-      $res = $this->db->executeFetchAll();
+      $users = $this->entityManager->getRepository('\donami\User\User')->findAll();
 
       // Create the view
       $this->views->add('users/list', [
-        'users' => $res,
+        'users' => $users,
       ]);
     }
 
@@ -84,15 +61,9 @@ class UserController implements \Anax\DI\IInjectionAware
      */
     public function getActiveAction($limit = 10)
     {
-      $this->db
-        ->select('id, username, posts')
-        ->from('users')
-        ->orderBy('posts DESC')
-        ->limit($limit);
-
-      $res = $this->db->executeFetchAll();
-
-      return $res;
+      return $this->entityManager
+                ->getRepository('\donami\User\User')
+                ->findBy([], ['posts' => 'DESC'], $limit);
     }
 
 }

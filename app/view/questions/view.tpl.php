@@ -4,9 +4,9 @@
 
     <div class="main">
 
-      <h1 class="title"><?php echo htmlspecialchars($question->title) ?></h1>
+      <h1 class="title"><?php echo htmlspecialchars($question->getTitle()) ?></h1>
       <div>
-        <p><?php echo $this->textFilter->doFilter(htmlspecialchars($question->body), 'shortcode, markdown'); ?></p>
+        <p><?php echo $this->textFilter->doFilter(htmlspecialchars($question->getBody()), 'shortcode, markdown'); ?></p>
       </div>
 
     </div>
@@ -15,26 +15,26 @@
 
       <div class="left">
 
-        <a href="<?php echo $this->url->create('user?id=' . $question->user_id)?>"><img class="profile" src="http://cdn.devilsworkshop.org/files/2013/01/enlarged-facebook-profile-picture.jpg" alt="Profile picture"></a>
+        <a href="<?php echo $this->url->create('user?id=' . $question->getUser()->getId())?>"><img class="profile" src="http://cdn.devilsworkshop.org/files/2013/01/enlarged-facebook-profile-picture.jpg" alt="Profile picture"></a>
 
       </div>
 
       <div class="right">
-        <span class="date-asked"><?php echo $question->date_created ?></span>
+        <span class="date-asked"><?php echo $question->getDateCreated() ?></span>
 
-        <a class="username" href="<?php echo $this->url->create('user?id=' . $question->user_id)?>"><?php echo $question->username ?></a>
+        <a class="username" href="<?php echo $this->url->create('user?id=' . $question->getUser()->getId())?>"><?php echo $question->getUser()->getUsername() ?></a>
 
         <ul>
           <li><i class="fa fa-star fa-lg fa-fw"></i> &nbsp; Points: 10</li>
-          <li><i class="fa fa-question fa-lg fa-fw"></i> &nbsp; Questions: <?php echo $question->posts ?> </li>
-          <li><i class="fa fa-lightbulb-o fa-lg fa-fw"></i> &nbsp; Answers: <?php echo $question->answers ?> </li>
-          <li><i class="fa fa-comments fa-lg fa-fw"></i> &nbsp; Comments: <?php echo $question->questions ?> </li>
+          <li><i class="fa fa-question fa-lg fa-fw"></i> &nbsp; Questions: <?php echo $question->getUser()->getQuestions()->count() ?> </li>
+          <li><i class="fa fa-lightbulb-o fa-lg fa-fw"></i> &nbsp; Answers: <?php echo $question->getUser()->getAnswers()->count() ?> </li>
+          <li><i class="fa fa-comments fa-lg fa-fw"></i> &nbsp; Comments: <?php echo $question->getUser()->getComments()->count() ?> </li>
         </ul>
 
         <?php if ($admin): ?>
           <div class="actions">
-            <a class="btn btn-accept" href="<?php echo $this->url->create('question/edit?id=' . $question->id)?>">Edit</a>
-            <a class="btn btn-warning" href="<?php echo $this->url->create('question/delete?id=' . $question->id)?>">Delete</a>
+            <a class="btn btn-accept" href="<?php echo $this->url->create('question/edit?id=' . $question->getId())?>">Edit</a>
+            <a class="btn btn-warning" href="<?php echo $this->url->create('question/delete?id=' . $question->getId())?>">Delete</a>
           </div>
         <?php endif ?>
 
@@ -46,8 +46,7 @@
 
     <div class="tags">
       <h6>Tags:</h6>
-
-      <?php if (empty($tags)): ?>
+      <?php if ($tags->count() <= 0): ?>
 
         <p>No tags</p>
 
@@ -57,7 +56,7 @@
 
         <?php foreach ($tags as $tag): ?>
 
-            <a class="tag" href="<?php echo $this->url->create('tag?id=' . $tag->tagId) ?>"><?php echo $tag->title ?></a>
+            <a class="tag" href="<?php echo $this->url->create('tag?tag=' . $tag->getTitle()) ?>"><?php echo $tag->getTitle() ?></a>
 
         <?php endforeach; ?>
 
@@ -71,28 +70,28 @@
   </div>
 
   <h3>Answers</h3>
-  <?php if (empty($replies)): ?>
+  <?php if ($answers->count() <= 0): ?>
 
     <p>No replies yet</p>
 
   <?php else: ?>
 
-    <?php foreach ($replies as $reply): ?>
+    <?php foreach ($answers as $answer): ?>
 
-      <div class="comment <?php echo ($question->answered_id == $reply['main']['id']) ? "accepted-comment" : ""?>">
+      <div class="comment <?php echo ($question->getBestAnswer() == $answer) ? "accepted-comment" : ""?>">
 
         <div class="parent-comment">
 
           <div class="left">
 
             <div class="image">
-              <a href="<?php echo $this->url->create('user?id=' . $reply['main']['user_id'])?>"><img class="profile" src="http://cdn.devilsworkshop.org/files/2013/01/enlarged-facebook-profile-picture.jpg" alt="Profile picture"></a>
+              <a href="<?php echo $this->url->create('user?id=' . $answer->getUser()->getId())?>"><img class="profile" src="http://cdn.devilsworkshop.org/files/2013/01/enlarged-facebook-profile-picture.jpg" alt="Profile picture"></a>
             </div>
 
             <div>
-              Points: <?php echo $reply['main']['points']; ?>
-              <a href="<?php echo $this->url->create('reply/point?id=' . $reply['main']['id'] . '&amp;action=increase') ?>"><i class="fa fa-thumbs-up"></i></a>
-              <a href="<?php echo $this->url->create('reply/point?id=' . $reply['main']['id'] . '&amp;action=decrease') ?>"><i class="fa fa-thumbs-down"></i></a>
+              Points: <?php echo $answer->getRating() ?>
+              <a href="<?php echo $this->url->create('reply/point?id=' . $answer->getId() . '&amp;action=increase') ?>"><i class="fa fa-thumbs-up"></i></a>
+              <a href="<?php echo $this->url->create('reply/point?id=' . $answer->getId() . '&amp;action=decrease') ?>"><i class="fa fa-thumbs-down"></i></a>
             </div>
 
           </div>
@@ -102,32 +101,32 @@
             <div class="top">
 
               <div class="author">
-                <?php if ($question->answered_id == $reply['main']['id']): ?>
+                <?php if ($question->getBestAnswer() == $answer): ?>
                   <div class="accepted-badge">
                     <img src="http://icons.iconarchive.com/icons/bokehlicia/captiva/256/checkbox-icon.png" alt="Best answer" title="This answer has been accepted as the best answer"/>
                   </div>
                 <?php endif; ?>
 
-                <a class="user-link" href="<?php echo $this->url->create('user?id=' . $reply['main']['user_id'])?>">
-                  <?php echo $reply['main']['username'] ?>
+                <a class="user-link" href="<?php echo $this->url->create('user?id=' . $answer->getUser()->getId())?>">
+                  <?php echo $answer->getUser()->getUsername() ?>
                 </a>
 
               </div>
 
-              <span class="meta"><?php echo $reply['main']['date_created'] ?></span>
+              <span class="meta"><?php echo $answer->getDateCreated() ?></span>
 
             </div>
 
-            <div class="post"><?php echo $this->textFilter->doFilter(htmlspecialchars($reply['main']['body']), 'shortcode, markdown'); ?></div>
+            <div class="post"><?php echo $this->textFilter->doFilter(htmlspecialchars($answer->getBody()), 'shortcode, markdown'); ?></div>
 
             <?php if ($owner): ?>
 
               <div class="actions">
-                <a class="btn btn-accept" href="<?php echo $this->url->create('reply/accept?replyID=' . $reply['main']['id']) ?>&amp;questionID=<?php echo $reply['main']['question_id']?>">
+                <a class="btn btn-accept" href="<?php echo $this->url->create('reply/accept?replyID=' . $answer->getId()) ?>&amp;questionID=<?php echo $question->getId()?>">
                   Accept as answer
                 </a>
                 <?php if ($admin): ?>
-                <a class="btn btn-warning" href="<?php echo $this->url->create('reply/delete?replyID=' . $reply['main']['id']) ?>">
+                <a class="btn btn-warning" href="<?php echo $this->url->create('reply/delete?replyID=' . $answer->getId()) ?>">
                   Remove answer
                 </a>
                 <?php endif; ?>
@@ -140,40 +139,34 @@
         </div>
 
         <div class="child-comments">
-          <?php if (!empty($reply['replies'])): ?>
+          <?php if ($answer->getComments()->count() > 0): ?>
 
             <h3>Replies to this answer:</h3>
 
-            <?php foreach ($reply['replies'] as $comment): ?>
+            <?php foreach ($answer->getComments() as $comment): ?>
 
               <div class="child-comment">
 
                 <div class="left">
 
                   <div class="image">
-                    <a href="<?php echo $this->url->create('user?id=' . $comment['user_id'])?>"><img class="profile" src="http://cdn.devilsworkshop.org/files/2013/01/enlarged-facebook-profile-picture.jpg" alt="Profile picture"></a>
+                    <a href="<?php echo $this->url->create('user?id=' . $comment->getUser()->getId())?>"><img class="profile" src="http://cdn.devilsworkshop.org/files/2013/01/enlarged-facebook-profile-picture.jpg" alt="Profile picture"></a>
                   </div>
 
-                  <div>
-                    Points: <?php echo $comment['points']; ?>
-                    <a href="<?php echo $this->url->create('reply/point?id=' . $comment['id'] . '&amp;action=increase') ?>"><i class="fa fa-thumbs-up"></i></a>
-                    <a href="<?php echo $this->url->create('reply/point?id=' . $comment['id'] . '&amp;action=decrease') ?>"><i class="fa fa-thumbs-down"></i></a>
-                  </div>
-
-                  <a href="<?php echo $this->url->create('user?id=' . $comment['user_id'])?>">
-                    <?php echo $comment['username'] ?>
+                  <a href="<?php echo $this->url->create('user?id=' . $comment->getUser()->getId())?>">
+                    <?php echo $comment->getUser()->getUsername() ?>
                   </a>
                 </div>
 
                 <div class="right">
                   <div class="top">
-                    <a class="user-link" href="<?php echo $this->url->create('user?id=' . $comment['user_id'])?>">
-                      <?php echo $comment['username'] ?>
+                    <a class="user-link" href="<?php echo $this->url->create('user?id=' . $comment->getUser()->getId())?>">
+                      <?php echo $comment->getUser()->getUsername() ?>
                     </a>
-                    <span class="meta"><?php echo $reply['main']['date_created'] ?></span>
+                    <span class="meta"><?php echo $comment->getDateCreated() ?></span>
                   </div>
                   <div class="post">
-                    <?php echo $this->textFilter->doFilter(htmlspecialchars($comment['body']), 'shortcode, markdown'); ?>
+                    <?php echo $this->textFilter->doFilter(htmlspecialchars($comment->getBody()), 'shortcode, markdown'); ?>
                   </div>
                 </div>
 
@@ -190,11 +183,11 @@
             <h3>Reply to this comment</h3>
 
             <div>
-              <form action="reply/create" method="POST">
+              <form action="comment/create" method="POST">
                 <div>
                   <textarea name="reply_comment" rows="8" cols="40"></textarea>
-                  <input type="hidden" name="comment_id" value="<?php echo $reply['main']['id'] ?>">
-                  <input type="hidden" name="question_id" value="<?php echo $reply['main']['question_id'] ?>">
+                  <input type="hidden" name="comment_id" value="<?php echo $answer->getId() ?>">
+                  <input type="hidden" name="question_id" value="<?php echo $question->getId() ?>">
                 </div>
                 <button type="submit">Reply</button>
               </form>
@@ -218,7 +211,7 @@
         <p>Do you know the answer? Help by submitting your thoughts below</p>
         <div>
           <textarea name="reply_comment" cols="30" rows="10"></textarea>
-          <input type="hidden" name="question_id" value="<?php echo $question->id ?>">
+          <input type="hidden" name="question_id" value="<?php echo $question->getId() ?>">
         </div>
         <div>
           <button type="submit">Reply</button>

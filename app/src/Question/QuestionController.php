@@ -18,89 +18,32 @@ class QuestionController implements \Anax\DI\IInjectionAware
       $this->theme->setTitle('View question');
 
       // Fetch the question
-      $this->db
-        ->select('Q.id, Q.title, Q.body, Q.date_created, Q.user_id, Q.answered_id, U.username, U.posts, U.questions, U.answers')
-        ->from('questions AS Q')
-        ->join('users AS U', 'Q.user_id = U.id')
-        ->where('Q.id = ' . $questionId);
-
-      $this->db->execute();
-      $res = $this->db->fetchOne();
-
-      if (!$res) {
-        die('Unable to find the question');
+      if (!$question = $this->entityManager->find('\donami\Question\Question', $questionId)) {
+        die("Unable to find question");
       }
-
-      // Fetch the replies
-      $this->db
-        ->select('QR.*, U.username, QR.date_created')
-        ->from('questions_replies AS QR')
-        ->join('users AS U', 'QR.user_id = U.id')
-        ->where('question_id = ' . $questionId);
-
-      $replies = $this->db->executeFetchAll();
-
-      $replies = $this->formatReplies($replies);
-
-      // Fetch tags
-      $this->db
-        ->select('T.id AS tagId, T.title as title')
-        ->from('questions AS Q')
-        ->leftJoin('questions_tags AS QT', 'Q.id = QT.question_id')
-        ->leftJoin('tags AS T', 'T.id = QT.tag_id')
-        ->where('QT.question_id = ' . $questionId);
-
-      $tags = $this->db->executeFetchAll();
-
 
       $authed = false;
       $owner = false;
       $admin = $this->auth->isAdmin();
 
+
       if ($this->auth->isAuthed()) {
         $authed = true;
 
-        if ($this->auth->id() == $res->user_id) {
+        if ($this->auth->id() == $question->getUser()->getId()) {
           $owner = true;
         }
       }
 
       $this->views->add('questions/view', [
-        'question'  => $res,
-        'replies'   => $replies,
-        'tags'      => $tags,
+        'question'  => $question,
+        'answers'   => $question->getAnswers(),
+        'tags'      => $question->getTags(),
         'owner'     => $owner,
         'authed'    => $authed,
         'admin'     => $admin,
       ]);
     }
-
-    /**
-     * Generate the replies to comments
-     * @param  array  $data All the replies
-     *
-     * @return array       Formated array of all replies that has a parent comment
-     */
-    private function formatReplies($data = array())
-    {
-      // Convert the data to array
-      $data = json_decode(json_encode($data), True);
-
-      $comments = array();
-
-      foreach ($data as $key => $value) {
-        if ($value['comment_id'] === NULL || $value['comment_id'] == 0) {
-          $comments[$value['id']]['main'] = $value;
-        }
-        else {
-          // if (isset($comments[$value['comment_id']]))
-            $comments[$value['comment_id']]['replies'][] = $value;
-        }
-      }
-
-      return $comments;
-    }
-
 
     /**
      * List questions
@@ -111,11 +54,11 @@ class QuestionController implements \Anax\DI\IInjectionAware
     {
       $this->theme->setTitle('Questions');
 
-      $this->db->select()->from('questions');
-      $res = $this->db->executeFetchAll();
+      $questions = $this->entityManager->getRepository('\donami\Question\Question')->findAll();
+
 
       $this->views->add('questions/index', [
-        'questions' => $res,
+        'questions' => $questions,
         'authed' => $this->auth->isAuthed(),
       ]);
     }
@@ -128,15 +71,9 @@ class QuestionController implements \Anax\DI\IInjectionAware
      */
     public function getRecentAction($limit = 10)
     {
-      $this->db
-        ->select()
-        ->from('questions')
-        ->limit($limit)
-        ->orderBy('date_created DESC');
-
-      $res = $this->db->executeFetchAll();
-
-      return $res;
+      return $this->entityManager
+                ->getRepository('\donami\Question\Question')
+                ->findBy([], ['date_created' => 'DESC'], $limit);
     }
 
     /**
@@ -191,7 +128,7 @@ class QuestionController implements \Anax\DI\IInjectionAware
       // Need to create an array since $tags is and object
       $array = [];
       foreach ($tags as $tag) {
-        $array[] = $tag->title;
+        $array[] = $tag->getTitle();
       }
 
       // Turn the array into one string. Each tag divided by a comma and space
@@ -225,75 +162,34 @@ class QuestionController implements \Anax\DI\IInjectionAware
         die("You cannot leave the question field empty");
       }
 
-      // Query for inserting question data
-      $this->db->insert(
-          'questions',
-          [
-              'user_id'  => $this->auth->id(),
-              'title' => $data['title'],
-              'body' => $data['body']
-          ]
-      );
+      // Inserting question data
+      $question = new \donami\Question\Question;
+      $question->setTitle($data['title']);
+      $question->setBody($data['body']);
 
-      // If query was succesfull
-      if ($this->db->execute()) {
-        // The new questions id
-        $questionId = $this->db->lastInsertId();
+      $user = $this->entityManager->getRepository('\donami\User\User')->find($this->auth->id());
 
-        // Loop through the tags
-        foreach ($tags as $tag) {
+      $question->addUser($user);
 
-          $this->manageTag($tag, $questionId);
+      $this->entityManager->persist($question);
+      $this->entityManager->flush();
 
+      foreach ($tags as $value) {
+        if (empty($value)) {
+          return;
         }
 
+        $tag = new \donami\Tag\Tag;
+        $tag->setTitle($value);
+
+        $question->addTag($tag);
+
+        $this->entityManager->persist($tag);
+        $this->entityManager->flush();
       }
 
       // Redirect to the created question
-      $this->response->redirect($this->url->create('question?id=' . $questionId));
-    }
-
-    /**
-     * Handle the tag. If tag already exist fetch the id
-     * of the tag. Else create a new one
-     *
-     * @param string $tag
-     * @param int $questionId
-     * @return void
-     */
-    private function manageTag($tag, $questionId)
-    {
-      if (empty($tag)) {
-        return false;
-      }
-      // Check if tag already exists. If it does the id
-      // will be fetched otherwise create a new row
-      $check = $this->db->select('id')->from('tags')->where('title = "' . $tag . '"')->limit(1);
-      $this->db->execute();
-      $exists = $this->db->fetchOne();
-
-      // If the tag already exists
-      if ($exists) {
-        $tagId = $exists->id;
-      }
-      else {
-        // Create the tag incase it doesnt exist
-        $this->db->insert('tags', ['title' => $tag]);
-        $this->db->execute();
-
-        $tagId = $this->db->lastInsertId();
-      }
-
-      $this->db->insert(
-        'questions_tags',
-        [
-          'tag_id' => $tagId,
-          'question_id' => $questionId,
-        ]
-      );
-
-      $this->db->execute();
-
+      $this->response->redirect($this->url->create('question?id=' . $question->getId()));
     }
 
     /**
@@ -317,9 +213,12 @@ class QuestionController implements \Anax\DI\IInjectionAware
      */
     public function delete($questionId)
     {
-      $this->db->delete('questions', 'id = ' . $questionId);
+      $question = $this->entityManager->getRepository('\donami\Question\Question')->find($questionId);
 
-      return $this->db->execute();
+      $this->entityManager->remove($question);
+      $this->entityManager->flush();
+
+      return true;
     }
 
     /**
@@ -342,29 +241,15 @@ class QuestionController implements \Anax\DI\IInjectionAware
       }
 
       // Select the question
-      $this->db
-        ->select()
-        ->from('questions')
-        ->where('id = "' . $questionId . '"');
-
-      $this->db->execute();
-      $res = $this->db->fetchOne();
-
-      // Get the tags
-      $this->db
-        ->select('T.id, T.title AS title')
-        ->from('questions_tags AS QT')
-        ->join('tags AS T', 'T.id = QT.tag_id')
-        ->where('question_id = "' . $questionId . '"');
-      $tags = $this->db->executeFetchAll();
-
-
-      if (!$res) {
+      if (!$question = $this->entityManager->getRepository('\donami\Question\Question')->find($questionId)) {
         die('Unable to find question');
       }
 
+      // Get the tags as array
+      $tags = $question->getTags();
+
       $this->views->add('questions/edit', [
-        'question' => $res,
+        'question' => $question,
         'tags'     => $this->getStringFromTags($tags),
       ]);
     }
@@ -378,30 +263,37 @@ class QuestionController implements \Anax\DI\IInjectionAware
     private function update($questionId, $data)
     {
       // Clear tags before updating
-      $this->db
-        ->delete('questions_tags', 'question_id = "' . $questionId . '"');
-      $this->db->execute();
+      $question = $this->entityManager->getRepository('\donami\Question\Question')->find($questionId);
+
+      foreach ($question->getTags() as $tag) {
+        $this->entityManager->remove($tag);
+      };
+      $this->entityManager->flush();
+
 
       // Get array of tags from the data string
       $tags = $this->getTagsFromString($data['tags']);
 
-      // Loop through the tags and handle the tag action
-      foreach ($tags as $tag) {
-        $this->manageTag($tag, $questionId);
+
+      $question->setTitle($data['title']);
+      $question->setBody($data['body']);
+
+      $this->entityManager->flush();
+
+      // Add the tags
+      foreach ($tags as $value) {
+        if (empty($value)) {
+          return;
+        }
+
+        $tag = new \donami\Tag\Tag;
+        $tag->setTitle($value);
+
+        $question->addTag($tag);
+
+        $this->entityManager->persist($tag);
+        $this->entityManager->flush();
       }
-
-      // Update the data
-      $this->db
-        ->update(
-          'questions',
-          [
-            'title' => $data['title'],
-            'body' => $data['body'],
-          ],
-          'id = "' . $questionId . '"'
-        );
-
-      return $this->db->execute();
     }
 
 }
