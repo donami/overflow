@@ -141,13 +141,14 @@ $app->router->add('questions', function() use ($app) {
 // View question route
 $app->router->add('question', function() use ($app) {
   $questionId = $app->request->getGet('id');
+  $sort = $app->request->getGet('sort') ? $app->request->getGet('sort') : 'date_created';
 
   $app
     ->dispatcher
     ->forward([
       'controller' => 'question',
       'action' => 'view',
-      'params' => [$questionId]
+      'params' => [$questionId, $sort]
     ]);
 });
 
@@ -277,6 +278,8 @@ $app->router->add('reply/point', function() use ($app) {
 
   $id = $app->request->getGet('id');
   $action = $app->request->getGet('action');
+  $type = $app->request->getGet('type') ? $app->request->getGet('type') : null;
+
 
   if (!($action === 'increase' || $action === 'decrease')) {
     die("Invalid action");
@@ -287,7 +290,7 @@ $app->router->add('reply/point', function() use ($app) {
     ->forward([
       'controller' => 'reply',
       'action' => 'point',
-      'params' => [$id, $action]
+      'params' => [$id, $action, $type]
     ]);
 
 });

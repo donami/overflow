@@ -88,11 +88,13 @@
               <a href="<?php echo $this->url->create('user?id=' . $answer->getUser()->getId())?>"><img class="profile" src="http://cdn.devilsworkshop.org/files/2013/01/enlarged-facebook-profile-picture.jpg" alt="Profile picture"></a>
             </div>
 
+            <?php if ($authed): ?>
             <div>
               Points: <?php echo $answer->getRating() ?>
               <a href="<?php echo $this->url->create('reply/point?id=' . $answer->getId() . '&amp;action=increase') ?>"><i class="fa fa-thumbs-up"></i></a>
               <a href="<?php echo $this->url->create('reply/point?id=' . $answer->getId() . '&amp;action=decrease') ?>"><i class="fa fa-thumbs-down"></i></a>
             </div>
+            <?php endif; ?>
 
           </div>
 
@@ -122,9 +124,15 @@
             <?php if ($owner): ?>
 
               <div class="actions">
-                <a class="btn btn-accept" href="<?php echo $this->url->create('reply/accept?replyID=' . $answer->getId()) ?>&amp;questionID=<?php echo $question->getId()?>">
-                  Accept as answer
-                </a>
+
+                <?php if (!$owner): ?>
+
+                  <a class="btn btn-accept" href="<?php echo $this->url->create('reply/accept?replyID=' . $answer->getId()) ?>&amp;questionID=<?php echo $question->getId()?>">
+                    Accept as answer
+                  </a>
+
+                <?php endif; ?>
+
                 <?php if ($admin): ?>
                 <a class="btn btn-warning" href="<?php echo $this->url->create('reply/delete?replyID=' . $answer->getId()) ?>">
                   Remove answer
@@ -156,6 +164,15 @@
                   <a href="<?php echo $this->url->create('user?id=' . $comment->getUser()->getId())?>">
                     <?php echo $comment->getUser()->getUsername() ?>
                   </a>
+
+                  <?php if ($authed): ?>
+                  <div>
+                    Points: <?php echo $comment->getRating() ?>
+                    <a href="<?php echo $this->url->create('reply/point?id=' . $comment->getId() . '&amp;action=increase&amp;type=comment') ?>"><i class="fa fa-thumbs-up"></i></a>
+                    <a href="<?php echo $this->url->create('reply/point?id=' . $comment->getId() . '&amp;action=decrease&amp;type=comment') ?>"><i class="fa fa-thumbs-down"></i></a>
+                  </div>
+                  <?php endif; ?>
+
                 </div>
 
                 <div class="right">

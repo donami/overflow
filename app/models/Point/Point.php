@@ -28,6 +28,13 @@ class Point
     protected $answer = null;
 
     /**
+     * @ManyToOne(targetEntity="\donami\Comment\Comment")
+     * @JoinColumn(onDelete="CASCADE")
+     * @var \donami\Comment\Comment
+     */
+    protected $comment = null;
+
+    /**
      * @Column(type="string")
      * @var string
      */
@@ -74,5 +81,30 @@ class Point
       return $this->action;
     }
 
+
+
+    /**
+     * Get the value of Comment
+     *
+     * @return \donami\Comment\Comment
+     */
+    public function getComment()
+    {
+        return $this->comment;
+    }
+
+    /**
+     * Set the value of Comment
+     *
+     * @param \donami\Comment\Comment comment
+     *
+     * @return self
+     */
+    public function setComment(\donami\Comment\Comment $comment)
+    {
+        $this->comment = $comment;
+
+        return $this;
+    }
 
 }

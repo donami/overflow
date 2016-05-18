@@ -88,13 +88,21 @@ class ReplyController implements \Anax\DI\IInjectionAware
       $this->response->redirect($this->url->create('question?id=' . $questionId));
     }
 
-    public function pointAction($answerId, $action)
+    public function pointAction($answerId, $action, $type = null)
     {
-      $answer = $this->entityManager->getRepository('\donami\Answer\Answer')->find($answerId);
-      $questionId = $answer->getQuestion()->getId();
+      if ($type == 'comment') {
+        $answer = $this->entityManager->getRepository('\donami\Comment\Comment')->find($answerId);
+        $questionId = $answer->getAnswer()->getQuestion()->getId();
+      }
+      elseif ($type == 'answer' || $type == null) {
+        $answer = $this->entityManager->getRepository('\donami\Answer\Answer')->find($answerId);
+        $questionId = $answer->getQuestion()->getId();
+      }
+
+
 
       // Handle updating of points
-      $this->updatePoint($answer, $action);
+      $this->updatePoint($answer, $action, $type);
 
       // Redirect the user back
       $this->response->redirect($this->url->create('question?id=' . $questionId));
@@ -107,13 +115,21 @@ class ReplyController implements \Anax\DI\IInjectionAware
      *
      * @return boolean
      */
-    public function updatePoint($answer, $action)
+    public function updatePoint($answer, $action, $type)
     {
       // Get the user
       $user = $this->entityManager->getRepository('\donami\User\User')->find($this->auth->id());
 
-      // Check if user has voted on this answer
-      $exists = $this->entityManager->getRepository('\donami\Point\Point')->findOneBy(['user' => $user, 'answer' => $answer]);
+      if ($type == 'comment') {
+        // Check if user has voted on this answer
+        $exists = $this->entityManager->getRepository('\donami\Point\Point')->findOneBy(['user' => $user, 'comment' => $answer]);
+      }
+      else {
+        // Check if user has voted on this answer
+        $exists = $this->entityManager->getRepository('\donami\Point\Point')->findOneBy(['user' => $user, 'answer' => $answer]);
+      }
+
+
 
       // If user already has voted on answer
       if ($exists) {
@@ -143,7 +159,14 @@ class ReplyController implements \Anax\DI\IInjectionAware
 
       $point = new \donami\Point\Point;
       $point->setUser($user);
-      $point->setAnswer($answer);
+      if ($type == 'comment') {
+
+        $point->setComment($answer);
+      }
+      else {
+
+        $point->setAnswer($answer);
+      }
       $point->setAction($action);
 
       if ($action == 'increase') {

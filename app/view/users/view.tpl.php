@@ -10,9 +10,9 @@
 
     <ul>
       <li><i class="fa fa-star fa-lg fa-fw"></i> &nbsp; Points: 10</li>
-      <li><i class="fa fa-question fa-lg fa-fw"></i> &nbsp; Questions: <?php echo $user->getQuestionCount() ?></li>
-      <li><i class="fa fa-lightbulb-o fa-lg fa-fw"></i> &nbsp; Answers: <?php echo $user->getAnswerCount() ?></li>
-      <li><i class="fa fa-comments fa-lg fa-fw"></i> &nbsp; Comments: <?php echo $user->getPosts() ?></li>
+      <li><i class="fa fa-question fa-lg fa-fw"></i> &nbsp; Questions: <?php echo $user->getQuestions()->count() ?></li>
+      <li><i class="fa fa-lightbulb-o fa-lg fa-fw"></i> &nbsp; Answers: <?php echo $user->getAnswers()->count() ?></li>
+      <li><i class="fa fa-comments fa-lg fa-fw"></i> &nbsp; Comments: <?php echo $user->getComments()->count() ?></li>
     </ul>
 
   </div>

@@ -34,7 +34,7 @@ class Comment
      * @Column(type="integer")
      * @var int
      */
-    protected $points = 0;
+    protected $rating = 0;
 
     /**
      * @ManyToOne(targetEntity="\donami\Answer\Answer", inversedBy="comments")
@@ -42,6 +42,12 @@ class Comment
      * @var \donami\Answer\Answer
      */
     protected $answer;
+
+    /**
+     * @OneToMany(targetEntity="\donami\Point\Point", mappedBy="comment")
+     * @var \donami\Point\Point[]
+     */
+    protected $points = null;
 
     /**
      * @Column(type="string")
@@ -93,6 +99,26 @@ class Comment
     public function getPoints()
     {
       return $this->points;
+    }
+
+    public function getRating()
+    {
+      return $this->rating;
+    }
+
+    public function getAnswer()
+    {
+      return $this->answer;
+    }
+
+    public function incrementRating()
+    {
+      $this->rating = $this->rating + 1;
+    }
+
+    public function decrementRating()
+    {
+      $this->rating = $this->rating - 1;
     }
 
 }

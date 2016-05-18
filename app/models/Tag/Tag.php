@@ -20,7 +20,7 @@ class Tag
 
     /**
      * @ManyToMany(targetEntity="\donami\Question\Question", mappedBy="tags")
-     * @var string
+     * @var \donami\Question\Question[]
      */
     protected $questions;
 
