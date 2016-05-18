@@ -3,6 +3,13 @@
   <div class="question">
 
     <div class="main">
+      <div style="float: right">
+        Points: <?php echo $question->getRating() ?>
+        <?php if ($authed): ?>
+        <a href="<?php echo $this->url->create('point/increase?type=question&amp;id=' . $question->getId()) ?>"><i class="fa fa-thumbs-up"></i></a>
+        <a href="<?php echo $this->url->create('point/decrease?type=question&amp;id=' . $question->getId()) ?>"><i class="fa fa-thumbs-down"></i></a>
+        <?php endif; ?>
+      </div>
 
       <h1 class="title"><?php echo htmlspecialchars($question->getTitle()) ?></h1>
       <div>
@@ -91,8 +98,8 @@
             <?php if ($authed): ?>
             <div>
               Points: <?php echo $answer->getRating() ?>
-              <a href="<?php echo $this->url->create('reply/point?id=' . $answer->getId() . '&amp;action=increase') ?>"><i class="fa fa-thumbs-up"></i></a>
-              <a href="<?php echo $this->url->create('reply/point?id=' . $answer->getId() . '&amp;action=decrease') ?>"><i class="fa fa-thumbs-down"></i></a>
+              <a href="<?php echo $this->url->create('point/increase?type=answer&amp;id=' . $answer->getId()) ?>"><i class="fa fa-thumbs-up"></i></a>
+              <a href="<?php echo $this->url->create('point/decrease?type=answer&amp;id=' . $answer->getId()) ?>"><i class="fa fa-thumbs-down"></i></a>
             </div>
             <?php endif; ?>
 
@@ -168,8 +175,8 @@
                   <?php if ($authed): ?>
                   <div>
                     Points: <?php echo $comment->getRating() ?>
-                    <a href="<?php echo $this->url->create('reply/point?id=' . $comment->getId() . '&amp;action=increase&amp;type=comment') ?>"><i class="fa fa-thumbs-up"></i></a>
-                    <a href="<?php echo $this->url->create('reply/point?id=' . $comment->getId() . '&amp;action=decrease&amp;type=comment') ?>"><i class="fa fa-thumbs-down"></i></a>
+                    <a href="<?php echo $this->url->create('point/increase?type=comment&amp;id=' . $comment->getId()) ?>"><i class="fa fa-thumbs-up"></i></a>
+                    <a href="<?php echo $this->url->create('point/decrease?type=comment&amp;id=' . $comment->getId()) ?>"><i class="fa fa-thumbs-down"></i></a>
                   </div>
                   <?php endif; ?>
 

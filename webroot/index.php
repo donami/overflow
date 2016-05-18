@@ -50,6 +50,13 @@ $di->set('QuestionController', function() use($di) {
   return $controller;
 });
 
+// Point controller
+$di->set('PointController', function() use($di) {
+  $controller = new donami\Point\PointController();
+  $controller->setDI($di);
+  return $controller;
+});
+
 // Reply controller
 $di->set('ReplyController', function() use($di) {
   $controller = new donami\Reply\ReplyController();
@@ -215,6 +222,35 @@ $app->router->add('tag', function() use ($app) {
 
 });
 
+// Increase point route
+$app->router->add('point/increase', function() use ($app) {
+  $type = $app->request->getGet('type');
+  $id = $app->request->getGet('id');
+
+  $app
+    ->dispatcher
+    ->forward([
+      'controller' => 'point',
+      'action' => 'increase',
+      'params' => [$type, $id],
+    ]);
+});
+
+// Decrease point rote
+$app->router->add('point/decrease', function() use ($app) {
+  $type = $app->request->getGet('type');
+  $id = $app->request->getGet('id');
+
+  $app
+    ->dispatcher
+    ->forward([
+      'controller' => 'point',
+      'action' => 'decrease',
+      'params' => [$type, $id],
+    ]);
+});
+
+
 // Display user list route
 $app->router->add('users', function() use ($app) {
 
@@ -272,28 +308,6 @@ $app->router->add('reply/delete', function() use ($app) {
 
 });
 
-
-// Rate an answer route
-$app->router->add('reply/point', function() use ($app) {
-
-  $id = $app->request->getGet('id');
-  $action = $app->request->getGet('action');
-  $type = $app->request->getGet('type') ? $app->request->getGet('type') : null;
-
-
-  if (!($action === 'increase' || $action === 'decrease')) {
-    die("Invalid action");
-  }
-
-  $app
-    ->dispatcher
-    ->forward([
-      'controller' => 'reply',
-      'action' => 'point',
-      'params' => [$id, $action, $type]
-    ]);
-
-});
 
 // Post create reply route
 $app->router->add('reply/create', function() use ($app) {

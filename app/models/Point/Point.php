@@ -34,16 +34,19 @@ class Point
      */
     protected $comment = null;
 
+
+    /**
+     * @ManyToOne(targetEntity="\donami\Question\Question")
+     * @JoinColumn(onDelete="CASCADE")
+     * @var \donami\Question\Question
+     */
+    protected $question = null;
+
     /**
      * @Column(type="string")
      * @var string
      */
     protected $action = null;
-
-    public function __construct()
-    {
-      // $this->answers = new ArrayCollection();
-    }
 
 
     public function getId()
@@ -81,8 +84,6 @@ class Point
       return $this->action;
     }
 
-
-
     /**
      * Get the value of Comment
      *
@@ -103,6 +104,30 @@ class Point
     public function setComment(\donami\Comment\Comment $comment)
     {
         $this->comment = $comment;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of Question
+     *
+     * @return \donami\Question\Question
+     */
+    public function getQuestion()
+    {
+        return $this->question;
+    }
+
+    /**
+     * Set the value of Question
+     *
+     * @param \donami\Question\Question question
+     *
+     * @return self
+     */
+    public function setQuestion(\donami\Question\Question $question)
+    {
+        $this->question = $question;
 
         return $this;
     }

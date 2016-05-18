@@ -69,6 +69,18 @@ class Question
      */
     protected $answers = null;
 
+    /**
+     * @OneToMany(targetEntity="\donami\Point\Point", mappedBy="question")
+     * @var \donami\Point\Point
+     */
+    protected $points = null;
+
+    /**
+     * @Column(type="integer")
+     * @var int
+     */
+    protected $rating = 0;
+
 
     public function __construct()
     {
@@ -158,5 +170,65 @@ class Question
     {
       $this->best_answer_user = $best_answer_user;
     }
+
+
+    /**
+     * Get the value of Points
+     *
+     * @return \donami\Point\Point
+     */
+    public function getPoints()
+    {
+        return $this->points;
+    }
+
+    /**
+     * Set the value of Points
+     *
+     * @param \donami\Point\Point points
+     *
+     * @return self
+     */
+    public function setPoints(\donami\Point\Point $points)
+    {
+        $this->points = $points;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of Rating
+     *
+     * @return int
+     */
+    public function getRating()
+    {
+        return $this->rating;
+    }
+
+    /**
+     * Set the value of Rating
+     *
+     * @param int rating
+     *
+     * @return self
+     */
+    public function setRating($rating)
+    {
+        $this->rating = $rating;
+
+        return $this;
+    }
+
+    public function incrementRating()
+    {
+      $this->rating = $this->rating + 1;
+    }
+
+    public function decrementRating()
+    {
+      $this->rating = $this->rating - 1;
+    }
+
 
 }
