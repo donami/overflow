@@ -13,7 +13,7 @@ class QuestionController implements \Anax\DI\IInjectionAware
      *
      * @return void
      */
-    public function viewAction($questionId)
+    public function viewAction($questionId, $sort = 'date_created')
     {
       $this->theme->setTitle('View question');
 
@@ -35,9 +35,21 @@ class QuestionController implements \Anax\DI\IInjectionAware
         }
       }
 
+      // If sorting by rating otherwise sort by newest
+      if ($sort == 'rating') {
+        $iterator = $question->getAnswers()->getIterator();
+        $iterator->uasort(function ($a, $b) {
+          return ($a->getRating() < $b->getRating()) ? 1 : -1;
+        });
+        $answers = new \Doctrine\Common\Collections\ArrayCollection(iterator_to_array($iterator));
+      }
+      else {
+        $answers = $question->getAnswers();
+      }
+
       $this->views->add('questions/view', [
         'question'  => $question,
-        'answers'   => $question->getAnswers(),
+        'answers'   => $answers,
         'tags'      => $question->getTags(),
         'owner'     => $owner,
         'authed'    => $authed,

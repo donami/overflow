@@ -77,6 +77,7 @@
   </div>
 
   <h3>Answers</h3>
+  <a href="<?php echo $this->url->create('question?id=' . $question->getId() . '&amp;sort=rating')?>">Sort by rating</a> <a href="<?php echo $this->url->create('question?id=' . $question->getId())?>">Sort by date</a>
   <?php if ($answers->count() <= 0): ?>
 
     <p>No replies yet</p>
@@ -95,13 +96,13 @@
               <a href="<?php echo $this->url->create('user?id=' . $answer->getUser()->getId())?>"><img class="profile" src="http://cdn.devilsworkshop.org/files/2013/01/enlarged-facebook-profile-picture.jpg" alt="Profile picture"></a>
             </div>
 
-            <?php if ($authed): ?>
             <div>
               Points: <?php echo $answer->getRating() ?>
-              <a href="<?php echo $this->url->create('point/increase?type=answer&amp;id=' . $answer->getId()) ?>"><i class="fa fa-thumbs-up"></i></a>
-              <a href="<?php echo $this->url->create('point/decrease?type=answer&amp;id=' . $answer->getId()) ?>"><i class="fa fa-thumbs-down"></i></a>
+              <?php if ($authed): ?>
+                <a href="<?php echo $this->url->create('point/increase?type=answer&amp;id=' . $answer->getId()) ?>"><i class="fa fa-thumbs-up"></i></a>
+                <a href="<?php echo $this->url->create('point/decrease?type=answer&amp;id=' . $answer->getId()) ?>"><i class="fa fa-thumbs-down"></i></a>
+              <?php endif; ?>
             </div>
-            <?php endif; ?>
 
           </div>
 
@@ -172,13 +173,13 @@
                     <?php echo $comment->getUser()->getUsername() ?>
                   </a>
 
-                  <?php if ($authed): ?>
                   <div>
                     Points: <?php echo $comment->getRating() ?>
-                    <a href="<?php echo $this->url->create('point/increase?type=comment&amp;id=' . $comment->getId()) ?>"><i class="fa fa-thumbs-up"></i></a>
-                    <a href="<?php echo $this->url->create('point/decrease?type=comment&amp;id=' . $comment->getId()) ?>"><i class="fa fa-thumbs-down"></i></a>
+                    <?php if ($authed): ?>
+                      <a href="<?php echo $this->url->create('point/increase?type=comment&amp;id=' . $comment->getId()) ?>"><i class="fa fa-thumbs-up"></i></a>
+                      <a href="<?php echo $this->url->create('point/decrease?type=comment&amp;id=' . $comment->getId()) ?>"><i class="fa fa-thumbs-down"></i></a>
+                    <?php endif; ?>
                   </div>
-                  <?php endif; ?>
 
                 </div>
 

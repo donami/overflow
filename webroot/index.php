@@ -148,7 +148,7 @@ $app->router->add('questions', function() use ($app) {
 // View question route
 $app->router->add('question', function() use ($app) {
   $questionId = $app->request->getGet('id');
-  $sort = $app->request->getGet('sort') ? $app->request->getGet('sort') : 'date_created';
+  $sort = $app->request->getGet('sort') ? $app->request->getGet('sort') : null;
 
   $app
     ->dispatcher

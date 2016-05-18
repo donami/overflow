@@ -1,6 +1,8 @@
 <?php
 namespace donami\Tag;
 
+use Doctrine\Common\Collections\ArrayCollection;
+
 /**
  * @Entity @Table(name="tags")
  */
@@ -24,6 +26,10 @@ class Tag
      */
     protected $questions;
 
+    public function __construct()
+    {
+      $this->questions = new ArrayCollection();
+    }
 
     public function getId()
     {
