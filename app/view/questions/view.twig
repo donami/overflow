@@ -1,0 +1,267 @@
+{% extends "/layout/layout.twig" %}
+
+{% block content %}
+
+<div id="question-container">
+
+  <div class="question">
+
+    <div class="main">
+      <div style="float: right">
+        Points: {{ question.getRating() }}
+        {% if authed %}
+        <a href="{{ app.url.create('point/increase?type=question&id=' ~ question.getId() ) }}"><i class="fa fa-thumbs-up"></i></a>
+        <a href="{{ app.url.create('point/decrease?type=question&id=' ~ question.getId() ) }}"><i class="fa fa-thumbs-down"></i></a>
+        {% endif %}
+      </div>
+
+      <h1 class="title">{{ question.getTitle() | escape }}</h1>
+      <div>
+        <p>{{ app.textFilter.doFilter(question.getBody(), 'shortcode, markdown') | raw }}</p>
+      </div>
+
+    </div>
+
+    <div class="author">
+
+      <div class="left">
+
+        <a href="{{ app.url.create('user?id=' ~ question.getUser().getId()) }}"><img class="profile" src="{{ question.getUser().getImageSrc() }}" alt="Profile picture"></a>
+
+      </div>
+
+      <div class="right">
+        <span class="date-asked">{{ question.getDateCreated() }}</span>
+
+        <a class="username" href="{{ app.url.create('user?id=' ~ question.getUser().getId()) }}">{{ question.getUser().getUsername() }}</a>
+
+        <ul>
+          <li><i class="fa fa-star fa-lg fa-fw"></i> &nbsp; Points: 10</li>
+          <li><i class="fa fa-question fa-lg fa-fw"></i> &nbsp; Questions: {{ question.getUser().getQuestions().count() }} </li>
+          <li><i class="fa fa-lightbulb-o fa-lg fa-fw"></i> &nbsp; Answers: {{ question.getUser().getAnswers().count() }} </li>
+          <li><i class="fa fa-comments fa-lg fa-fw"></i> &nbsp; Comments: {{ question.getUser().getComments().count() }} </li>
+        </ul>
+
+        {% if admin %}
+          <div class="actions">
+            <a class="btn btn-accept" href="{{ app.url.create('question/edit?id=' ~ question.getId()) }}">Edit</a>
+            <a class="btn btn-warning" href="{{ app.url.create('question/delete?id=' ~ question.getId()) }}">Delete</a>
+          </div>
+        {% endif %}
+
+      </div>
+
+    </div>
+
+
+
+    <div class="tags">
+      <h6>Tags:</h6>
+      {% if tags is empty %}
+
+        <p>No tags</p>
+
+      {% else %}
+
+        <div class="tags">
+
+        {% for tag in tags %}
+
+            <a class="tag" href="{{ app.url.create('tag?tag=' ~ tag.getTitle()) }}">{{ tag.getTitle() }}</a>
+
+        {% endfor %}
+
+        </div>
+
+      {% endif %}
+
+    </div>
+
+
+  </div>
+
+  <h3>Answers</h3>
+  <a href="{{ app.url.create('question?id=' ~ question.getId() ~ '&sort=rating') }}">Sort by rating</a> <a href="{{ app.url.create('question?id=' ~ question.getId()) }}">Sort by date</a>
+  {% if answers is empty %}
+
+    <p>No replies yet</p>
+
+
+  {% else %}
+
+    {% for answer in answers %}
+
+      <div class="comment {{ question.getBestAnswer() == answer ? 'accepted-comment' : '' }}">
+
+        <div class="parent-comment">
+
+          <div class="left">
+
+            <div class="image">
+              <a href="{{ app.url.create('user?id=' ~ answer.getUser().getId()) }}"><img class="profile" src="{{ question.getUser().getImageSrc() }}" alt="Profile picture"></a>
+            </div>
+
+            <div>
+              Points: {{ answer.getRating() }}
+              {% if authed %}
+                <a href="{{ app.url.create('point/increase?type=answer&id=' ~ answer.getId()) }}"><i class="fa fa-thumbs-up"></i></a>
+                <a href="{{ app.url.create('point/decrease?type=answer&id=' ~ answer.getId()) }}"><i class="fa fa-thumbs-down"></i></a>
+              {% endif %}
+            </div>
+
+          </div>
+
+          <div class="right">
+
+            <div class="top">
+
+              <div class="author">
+                {% if question.getBestAnswer() == answer %}
+                  <div class="accepted-badge">
+                    <img src="http://icons.iconarchive.com/icons/bokehlicia/captiva/256/checkbox-icon.png" alt="Best answer" title="This answer has been accepted as the best answer"/>
+                  </div>
+                {% endif %}
+
+                <a class="user-link" href="{{ app.url.create('user?id=' ~ answer.getUser().getId()) }}">
+                  {{ answer.getUser().getUsername() }}
+                </a>
+
+              </div>
+
+              <span class="meta">{{ answer.getDateCreated() }}</span>
+
+            </div>
+
+            <div class="post">{{ app.textFilter.doFilter(answer.getBody(), 'shortcode, markdown') | raw }}</div>
+
+            {% if owner %}
+
+              <div class="actions">
+
+                {% if not owner %}
+
+                  <a class="btn btn-accept" href="{{ app.url.create('reply/accept?replyID=' ~ answer.getId()) ~ '&questionID=' ~ question.getId() }}">
+                    Accept as answer
+                  </a>
+
+                {% endif %}
+
+                {% if admin %}
+                <a class="btn btn-warning" href="{{ app.url.create('reply/delete?replyID=' ~ answer.getId()) }}">
+                  Remove answer
+                </a>
+                {% endif %}
+              </div>
+
+            {% endif %}
+
+          </div>
+
+        </div>
+
+        <div class="child-comments">
+          {% if answer.getComments() is not empty %}
+
+            <h3>Replies to this answer:</h3>
+
+            {% for comment in answer.getComments() %}
+
+              <div class="child-comment">
+
+                <div class="left">
+
+                  <div class="image">
+                    <a href="{{ app.url.create('user?id=' ~ comment.getUser().getId()) }}"><img class="profile" src="{{ question.getUser().getImageSrc() }}" alt="Profile picture"></a>
+                  </div>
+
+                  <a href="{{ app.url.create('user?id=' ~ comment.getUser().getId()) }}">
+                    {{ comment.getUser().getUsername() }}
+                  </a>
+
+                  <div>
+                    Points: {{ comment.getRating() }}
+                    {% if authed %}
+                      <a href="{{ app.url.create('point/increase?type=comment&id=' ~ comment.getId()) }}"><i class="fa fa-thumbs-up"></i></a>
+                      <a href="{{ app.url.create('point/decrease?type=comment&id=' ~ comment.getId()) }}"><i class="fa fa-thumbs-down"></i></a>
+                    {% endif %}
+                  </div>
+
+                </div>
+
+                <div class="right">
+                  <div class="top">
+                    <a class="user-link" href="{{ app.url.create('user?id=' ~ comment.getUser().getId()) }}">
+                      {{ comment.getUser().getUsername() }}
+                    </a>
+                    <span class="meta">{{ comment.getDateCreated() }}</span>
+                  </div>
+                  <div class="post">
+                    {{ app.textFilter.doFilter(comment.getBody(), 'shortcode, markdown') | raw }}
+                  </div>
+                </div>
+
+              </div>
+
+            {% endfor %}
+
+          {% endif %}
+        </div>
+
+        {% if authed %}
+
+          <div class="add-comment">
+            <h3>Reply to this comment</h3>
+
+            <div>
+              <form action="comment/create" method="POST">
+                <div>
+                  <textarea name="reply_comment" rows="8" cols="40"></textarea>
+                  <input type="hidden" name="comment_id" value="{{ answer.getId() }}">
+                  <input type="hidden" name="question_id" value="{{ question.getId() }}">
+                </div>
+                <button type="submit">Reply</button>
+              </form>
+            </div>
+
+          </div>
+
+        {% endif %}
+
+      </div>
+
+    {% endfor %}
+
+  {% endif %}
+
+  <div class="form-add-answer">
+    {% if authed %}
+
+      <form action="reply/create" method="POST">
+        <h3>Answer the question</h3>
+        <p>Do you know the answer? Help by submitting your thoughts below</p>
+        <div>
+          <textarea name="reply_comment" cols="30" rows="10"></textarea>
+          <input type="hidden" name="question_id" value="{{ question.getId() }}">
+        </div>
+        <div>
+          <button type="submit">Reply</button>
+        </div>
+      </form>
+
+    {% else %}
+
+      <div class="not-logged-in">
+        <h2>You need to be logged in to answer</h2>
+        <p>
+          In order to submit an answer you need to be logged in. <br>
+          You can sign up for an account <a href="{{ app.url.create('register') }}">here.</a> <br><br>
+          If you already are a member you can sign in <a href="{{ app.url.create('login') }}">here.</a>
+        </p>
+      </div>
+
+    {% endif %}
+  </div>
+
+</div>
+
+{% endblock %}

@@ -26,8 +26,8 @@ class UserController implements \Anax\DI\IInjectionAware
       // Fetch answers that has been accepted as best answer
       $bestAnswers = $this->entityManager->getRepository('\donami\Question\Question')->findBy(['best_answer_user' => $userId]);
 
-      // Create the view
-      $this->views->add('users/view', [
+      // Render the view
+      echo $this->twig->render('users/view.twig', [
         'user' => $user,
         'questions' => $user->getQuestions(),
         'answers' => $user->getAnswers(),
@@ -47,8 +47,8 @@ class UserController implements \Anax\DI\IInjectionAware
       // Fetch tags from database
       $users = $this->entityManager->getRepository('\donami\User\User')->findAll();
 
-      // Create the view
-      $this->views->add('users/list', [
+      // Render the view
+      echo $this->twig->render('users/list.twig', [
         'users' => $users,
       ]);
     }

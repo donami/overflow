@@ -1,0 +1,32 @@
+{% extends '/layout/layout.twig' %}
+
+{% block content %}
+
+<div>
+  <h1>Tag: {{ tag[0].getTitle() }}</h1>
+
+
+  <h3>Questions with this tag:</h3>
+  <div>
+    {% if questions is empty %}
+
+      <p>No questions with this tag</p>
+
+    {% else %}
+
+      {% for question in questions %}
+
+        <div>
+
+          <a href="{{ app.url.create('question?id=' ~ question.getId()) }}">{{ question.getTitle() }}</a>
+
+        </div>
+
+      {% endfor %}
+
+    {% endif %}
+  </div>
+
+</div>
+
+{% endblock %}

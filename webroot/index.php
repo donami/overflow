@@ -14,9 +14,11 @@ $app->navbar->configure(ANAX_APP_PATH . 'config/navbar.php');
 $di->set('form', '\Mos\HTMLForm\CForm');
 
 $loader = new Twig_Loader_Filesystem(ANAX_APP_PATH . 'view');
-$twig = new Twig_Environment($loader, array(
-    'views' => ANAX_APP_PATH . 'view/cache',
-));
+$twig = new Twig_Environment($loader, [
+  'debug' => true,
+]);
+$twig->addExtension(new Twig_Extension_Debug());
+$twig->addGlobal('app', $app);
 
 // Database handling
 $di->setShared('db', function() {
@@ -128,7 +130,7 @@ $app->router->add('', function() use ($app) {
     ]);
 
 
-    $app->views->add('welcome/index', [
+    echo $app->twig->render('welcome/index.twig', [
       'recentQuestions' => $recent,
       'activeUsers' => $activeUsers,
       'popularTags' => $popularTags,

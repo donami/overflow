@@ -45,7 +45,6 @@ class User
      */
     protected $posts = 0;
 
-
     /**
      * @Column(type="integer")
      * @var int
@@ -181,6 +180,19 @@ class User
     public function getAdmin()
     {
       return $this->admin;
+    }
+
+    public function getImageSrc($size = 200)
+    {
+      $sizeString = '?size=' . $size;
+
+      $hash = md5( strtolower( trim( $this->email ) ) );
+      return 'http://www.gravatar.com/avatar/' . $hash . $sizeString . '.jpg';
+    }
+
+    public function getImage()
+    {
+      return '<img src="' . $this->getImageSrc . '" />';
     }
 
 }

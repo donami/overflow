@@ -50,7 +50,7 @@ class AuthController extends LoginForm implements \Anax\DI\IInjectionAware
       // Check if the user is already authed
       $formHTML = $this->auth->isAuthed() ? $authedHTML : $form->getHTML();
 
-      $this->views->add('auth/login', [
+      echo $this->twig->render('auth/login.twig', [
         'form' => $formHTML,
       ]);
     }

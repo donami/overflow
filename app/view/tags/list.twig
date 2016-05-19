@@ -1,0 +1,37 @@
+{% extends '/layout/layout.twig' %}
+
+{% block content %}
+
+<div>
+
+  <h1>View list of tags</h1>
+
+  <div class="box">
+
+
+    <div class="title">Tags</div>
+
+    <div class="content">
+      {% if tags is not empty %}
+
+        {% for tag in tags %}
+
+          <div>
+            <a href="{{app.url.create('tag?tag=' ~ tag.getTitle()) }}">{{ tag.getTitle() }}</a>
+          </div>
+
+        {% endfor %}
+
+      {% else %}
+
+        <p>No tags found</p>
+
+      {% endif %}
+    </div>
+
+  </div>
+
+</div>
+
+
+{% endblock %}

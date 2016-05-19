@@ -1,0 +1,114 @@
+{% extends '/layout/layout.twig' %}
+
+{% block content %}
+
+<div class="user-container">
+
+  <div class="information">
+
+    <div class="image">
+      <img class="profile" src="{{ user.getImageSrc() }}" alt="Profile picture">
+    </div>
+
+    <h1>{{ user.getUsername() }}</h1>
+
+    <ul>
+      <li><i class="fa fa-star fa-lg fa-fw"></i> &nbsp; Points: 10</li>
+      <li><i class="fa fa-question fa-lg fa-fw"></i> &nbsp; Questions: {{ user.getQuestions().count() }}</li>
+      <li><i class="fa fa-lightbulb-o fa-lg fa-fw"></i> &nbsp; Answers: {{ user.getAnswers().count() }}</li>
+      <li><i class="fa fa-comments fa-lg fa-fw"></i> &nbsp; Comments: {{ user.getComments().count() }}</li>
+    </ul>
+
+  </div>
+
+  <div class="main">
+
+    <div class="box">
+
+      <div class="title">Questions by this user</div>
+
+      <div class="content">
+
+        {% if questions is empty %}
+
+          <p><em>No questions by this user yet</em></p>
+
+        {% else %}
+
+          {% for question in questions %}
+
+            <div>
+
+              <a href="{{ app.url.create('question?id=' ~ question.getId()) }}">{{ question.getTitle() }}</a>
+
+            </div>
+
+          {% endfor %}
+
+        {% endif %}
+
+      </div>
+
+    </div>
+
+
+
+    <div class="box">
+
+      <div class="title">Answers by this user</div>
+
+      <div class="content">
+        {% if answers is empty %}
+
+          <p><em>No answers by this user yet</em></p>
+
+        {% else %}
+
+          {% for answer in answers %}
+
+            <div>
+
+              <a href="{{ app.url.create('question?id=' ~ answer.getQuestion().getId()) }}">{{ answer.getQuestion().getTitle() }}</a>
+
+            </div>
+
+          {% endfor %}
+
+        {% endif %}
+
+      </div>
+
+    </div>
+
+
+    <div class="box">
+      <div class="title">Questions answered by this user</div>
+      <div class="content">
+        {% if bestAnswers is empty %}
+
+          <p><em>No answers has been accepted as the best answer yet</em></p>
+
+        {% else %}
+
+          {% for answer in bestAnswers %}
+
+            <div>
+
+              <a href="{{ app.url.create('question?id=' ~ answer.getId()) }}">{{ answer.getTitle() }}</a>
+
+            </div>
+
+          {% endfor %}
+
+        {% endif %}
+
+      </div>
+    </div>
+
+  </div>
+
+
+</div>
+
+
+{% endblock %}

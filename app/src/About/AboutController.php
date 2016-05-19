@@ -17,8 +17,8 @@ class AboutController implements \Anax\DI\IInjectionAware
     {
       $this->theme->setTitle('About us');
 
-      // Create the view
-      $this->views->add('about/view', []);
+      // Render the view
+      echo $this->twig->render('about/view.twig', []);
     }
 
 }

@@ -1,0 +1,55 @@
+{% extends '/layout/layout.twig' %}
+
+{% block content %}
+<div>
+
+  <h1>Read all questions</h1>
+
+  <div class="box">
+
+    <div class="title">Questions</div>
+
+    <div class="content">
+
+      <div>
+
+        {% if authed %}
+
+          <a class="btn" href="{{ app.url.create('question/create') }}">Submit question</a>
+
+        {% else %}
+
+          <p><a class="btn" href="{{ app.url.create('login') }}">Login to post a question</a></p>
+
+        {% endif %}
+
+      </div>
+
+      {% if questions is empty %}
+
+        <p>No questions has been made</p>
+
+      {% else %}
+
+        {% for question in questions %}
+
+          <div>
+            <h4>
+              <a href="{{ app.url.create('question?id=' ~ question.getId()) }}">{{ question.getTitle() | escape }}</a>
+            </h4>
+            <p>
+              {{ question.getBody() | escape }}
+            </p>
+          </div>
+
+        {% endfor %}
+
+      {% endif %}
+
+    </div>
+
+  </div>
+
+</div>
+
+{% endblock %}

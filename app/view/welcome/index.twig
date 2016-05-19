@@ -1,0 +1,88 @@
+{% extends "/layout/layout.twig" %}
+
+{% block content %}
+
+  <h1>Welcome</h1>
+
+  <div class="box">
+
+    <div class="title">Most recent questions</div>
+
+    <div class="content">
+
+      {% if recentQuestions is empty %}
+
+        <p>No recent questions found</p>
+
+      {% else %}
+
+        {% for question in recentQuestions %}
+
+          <div>
+
+            <a href="{{ app.url.create('question?id=' ~ question.getId()) }}">{{ question.getTitle() }}</a>
+
+          </div>
+
+        {% endfor %}
+
+      {% endif %}
+
+    </div>
+
+  </div>
+
+
+  <div class="box">
+
+    <div class="title">Most active users</div>
+
+    <div class="content">
+
+      {% if activeUsers is empty %}
+
+        <p>No users found</p>
+
+      {% else %}
+
+        {% for user in activeUsers %}
+
+          <div>
+
+            <a href="{{ app.url.create('user?id=' ~ user.getId())}}">{{ user.getUsername()}}</a>
+
+          </div>
+
+        {% endfor %}
+
+      {% endif %}
+
+    </div>
+
+  </div>
+
+  <div class="box">
+
+    <div class="title">Popular tags</div>
+
+    <div class="content">
+
+      {% if popularTags is empty %}
+
+        <p>No tags found</p>
+
+      {% else %}
+
+        {% for tag in popularTags %}
+
+            <a class="tag" href="{{ app.url.create('tag?tag=' ~ tag.getTitle())}}">{{ tag.getTitle() }}</a>
+
+        {% endfor %}
+
+      {% endif %}
+
+    </div>
+
+  </div>
+
+{% endblock %}

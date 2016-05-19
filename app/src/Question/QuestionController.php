@@ -47,7 +47,7 @@ class QuestionController implements \Anax\DI\IInjectionAware
         $answers = $question->getAnswers();
       }
 
-      $this->views->add('questions/view', [
+      echo $this->twig->render('questions/view.twig', [
         'question'  => $question,
         'answers'   => $answers,
         'tags'      => $question->getTags(),
@@ -55,6 +55,7 @@ class QuestionController implements \Anax\DI\IInjectionAware
         'authed'    => $authed,
         'admin'     => $admin,
       ]);
+
     }
 
     /**
@@ -68,8 +69,7 @@ class QuestionController implements \Anax\DI\IInjectionAware
 
       $questions = $this->entityManager->getRepository('\donami\Question\Question')->findAll();
 
-
-      $this->views->add('questions/index', [
+      echo $this->twig->render('questions/list.twig', [
         'questions' => $questions,
         'authed' => $this->auth->isAuthed(),
       ]);
@@ -108,7 +108,8 @@ class QuestionController implements \Anax\DI\IInjectionAware
           $this->insert($_POST, $tags);
       }
 
-      $this->views->add('questions/create', []);
+
+      echo $this->twig->render('questions/create.twig', []);
     }
 
 
@@ -187,17 +188,15 @@ class QuestionController implements \Anax\DI\IInjectionAware
       $this->entityManager->flush();
 
       foreach ($tags as $value) {
-        if (empty($value)) {
-          return;
+        if (!empty($value)) {
+          $tag = new \donami\Tag\Tag;
+          $tag->setTitle($value);
+
+          $question->addTag($tag);
+
+          $this->entityManager->persist($tag);
+          $this->entityManager->flush();
         }
-
-        $tag = new \donami\Tag\Tag;
-        $tag->setTitle($value);
-
-        $question->addTag($tag);
-
-        $this->entityManager->persist($tag);
-        $this->entityManager->flush();
       }
 
       // Redirect to the created question
@@ -260,7 +259,7 @@ class QuestionController implements \Anax\DI\IInjectionAware
       // Get the tags as array
       $tags = $question->getTags();
 
-      $this->views->add('questions/edit', [
+      echo $this->twig->render('questions/edit.twig', [
         'question' => $question,
         'tags'     => $this->getStringFromTags($tags),
       ]);
@@ -278,14 +277,15 @@ class QuestionController implements \Anax\DI\IInjectionAware
       $question = $this->entityManager->getRepository('\donami\Question\Question')->find($questionId);
 
       foreach ($question->getTags() as $tag) {
-        $this->entityManager->remove($tag);
-      };
-      $this->entityManager->flush();
 
+        $question->getTags()->removeElement($tag);
+        $this->entityManager->remove($tag);
+
+        $this->entityManager->flush();
+      };
 
       // Get array of tags from the data string
       $tags = $this->getTagsFromString($data['tags']);
-
 
       $question->setTitle($data['title']);
       $question->setBody($data['body']);
@@ -294,18 +294,18 @@ class QuestionController implements \Anax\DI\IInjectionAware
 
       // Add the tags
       foreach ($tags as $value) {
-        if (empty($value)) {
-          return;
+        if (!empty($value)) {
+          $tag = new \donami\Tag\Tag;
+          $tag->setTitle($value);
+
+          $question->addTag($tag);
+
+          $this->entityManager->persist($tag);
+          $this->entityManager->flush();
         }
-
-        $tag = new \donami\Tag\Tag;
-        $tag->setTitle($value);
-
-        $question->addTag($tag);
-
-        $this->entityManager->persist($tag);
-        $this->entityManager->flush();
       }
+
+      return true;
     }
 
 }

@@ -1,0 +1,36 @@
+{% extends '/layout/layout.twig' %}
+
+{% block content %}
+
+<div>
+
+  <h1>Display user list</h1>
+
+  <div class="box">
+
+    <div class="title">Users</div>
+
+    <div class="content">
+      {% if users is not empty %}
+
+        {% for user in users %}
+
+          <div>
+            <a href="{{ app.url.create('user?id=' ~ user.getId()) }}">{{ user.getUsername() }}</a>
+          </div>
+
+        {% endfor %}
+
+      {% else %}
+
+        <p>No users found</p>
+
+      {% endif %}
+    </div>
+
+  </div>
+
+</div>
+
+
+{% endblock %}

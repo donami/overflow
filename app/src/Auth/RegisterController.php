@@ -20,9 +20,10 @@ class RegisterController extends RegisterForm implements \Anax\DI\IInjectionAwar
       // Init form
       $form = $this->initForm();
 
-      $this->views->add('auth/register', [
+      echo $this->twig->render('auth/login.twig', [
         'form' => $form->getHTML(),
       ]);
+
     }
 
     /**

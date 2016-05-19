@@ -36,10 +36,9 @@ class TagController implements \Anax\DI\IInjectionAware
         }
       }
 
-      // Create the view
-      $this->views->add('tags/view', [
+      // Render the view
+      echo $this->twig->render('tags/view.twig', [
         'tag' => $tag,
-        // 'questions' => $tag->getQuestions(),
         'questions' => $questions,
       ]);
     }
@@ -63,8 +62,8 @@ class TagController implements \Anax\DI\IInjectionAware
 
       $tags = $query->getResult();
 
-      // Create the view
-      $this->views->add('tags/list', [
+      // Render the view
+      echo $this->twig->render('tags/list.twig', [
         'tags' => $tags,
       ]);
     }

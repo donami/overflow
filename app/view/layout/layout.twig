@@ -1,0 +1,60 @@
+<!doctype html>
+<html class='no-js' lang='<?=$lang?>'>
+<head>
+<meta charset='utf-8'/>
+<title>Fingerprint</title>
+<link rel='stylesheet' type='text/css' href='http://localhost/stack/webroot/css/anax-grid/style.php'/>
+<script src='http://localhost/stack/webroot/js/modernizr.js'></script>
+
+</head>
+
+<body>
+
+  <div id='header'>
+    <div class="container">
+
+      {% include 'layout/header.twig' %}
+
+      <div id="navbar">
+        <nav class="navbar">
+          <ul>
+            <li><a href="{{ app.url.create() }}">Home</a></li>
+            <li><a href="{{ app.url.create('questions') }}">Questions</a></li>
+            <li><a href="{{ app.url.create('tags') }}">Tags</a></li>
+            <li><a href="{{ app.url.create('users') }}">Users</a></li>
+            <li><a href="{{ app.url.create('about') }}">About</a></li>
+
+            {% if app.auth.isAuthed %}
+              <li><a href="{{ app.url.create('logout') }}">Logout</a></li>
+            {% else %}
+              <li><a href="{{ app.url.create('login') }}">Login</a></li>
+              <li><a href="{{ app.url.create('register') }}">Register</a></li>
+            {% endif %}
+
+          </ul>
+        </nav>
+      </div>
+
+    </div>
+  </div>
+
+  <div id='main'>
+    <div class="container">
+
+      {% block content %}
+
+      {% endblock %}
+
+    </div>
+  </div>
+
+  <div id='footer'>
+    <div class="container">
+
+      {% include 'layout/footer.twig' %}
+
+    </div>
+  </div>
+
+</body>
+</html>

@@ -1,3 +1,7 @@
+{% extends '/layout/layout.twig' %}
+
+{% block content %}
+
 <div class="login-container">
 
   <h1>Login</h1>
@@ -7,12 +11,13 @@
     <div class="title">Login</div>
 
     <div class="content">
-      
-      <?php echo $form ?>
+
+      {{ form | raw }}
 
     </div>
 
   </div>
 
-
 </div>
+
+{% endblock %}

@@ -40,7 +40,7 @@ class Question
     protected $best_answer = null;
 
     /**
-     * @Column(type="integer")
+     * @Column(type="integer", nullable=true)
      * @var int
      */
     protected $best_answer_user = null;
@@ -87,7 +87,6 @@ class Question
       $this->date_created = new \DateTime('now');
       $this->tags = new ArrayCollection();
       $this->answers = new ArrayCollection();
-
     }
 
     public function getId()
@@ -229,6 +228,5 @@ class Question
     {
       $this->rating = $this->rating - 1;
     }
-
 
 }
