@@ -37,8 +37,12 @@ class RegisterController extends RegisterForm implements \Anax\DI\IInjectionAwar
 
       try {
         $user = new \donami\User\User;
+        
+        // Hash password
+        $password = password_hash( trim($data['password']), PASSWORD_DEFAULT );
+
         $user->setUsername(trim($data['username']));
-        $user->setPassword(trim($data['password']));
+        $user->setPassword($password);
         $user->setEmail(trim($data['email']));
 
         $this->entityManager->persist($user);

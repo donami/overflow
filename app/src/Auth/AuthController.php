@@ -15,10 +15,16 @@ class AuthController extends LoginForm implements \Anax\DI\IInjectionAware
      */
     public function loginAction($username, $password)
     {
-      $auth = $this->entityManager->getRepository('\donami\User\User')->findOneBy(['username' => $username, 'password' => $password]);
+      $auth = $this->entityManager
+                ->getRepository('\donami\User\User')
+                ->findOneBy(['username' => $username]);
+
+      if (!$auth) {
+        die('No user with that username');
+      }
 
       // If auth is succesfull
-      if ($auth) {
+      if (password_verify($password, $auth->getPassword())) {
         $this->di->session->set('user', $auth);
       }
       else {
