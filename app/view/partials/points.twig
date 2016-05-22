@@ -5,8 +5,8 @@
     <span title="Please login to rate"><i class="fa fa-3x fa-angle-up"></i></span>
   {% endif %}
 
-  <div class="points {{ question.getRating() < 0 ? 'negative' : 'positive' }}">
-    {{ question.getRating() }}
+  <div class="points {{ rating < 0 ? 'negative' : 'positive' }}">
+    {{ rating }}
   </div>
 
   {% if authed %}

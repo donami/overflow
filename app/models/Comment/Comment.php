@@ -19,16 +19,16 @@ class Comment
     protected $user;
 
     /**
-     * @Column(type="string")
-     * @var string
+     * @Column(type="datetime")
+     * @var \Datetime
      */
-    protected $date_created = '';
+    protected $date_created;
 
     /**
-     * @Column(type="string")
-     * @var string
+     * @Column(type="datetime", nullable=true)
+     * @var \Datetime
      */
-    protected $date_modified = '';
+    protected $date_modified;
 
     /**
      * @Column(type="integer")
@@ -54,6 +54,11 @@ class Comment
      * @var string
      */
     protected $body;
+
+    public function __construct()
+    {
+      $this->date_created = new \Datetime('now');
+    }
 
 
     public function getId()
@@ -93,7 +98,7 @@ class Comment
 
     public function getDateCreated($value='')
     {
-      return $this->date_created;
+      return $this->date_created->format('Y-m-d H:i');
     }
 
     public function getPoints()
