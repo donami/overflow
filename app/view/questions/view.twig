@@ -4,16 +4,13 @@
 
 <div id="question-container">
 
+  <div class="sidebar">
+    {{ include('/partials/points.twig', {type: 'question', id: question.getId() }) }}
+  </div>
+
   <div class="question">
 
     <div class="main">
-      <div style="float: right">
-        Points: {{ question.getRating() }}
-        {% if authed %}
-        <a href="{{ app.url.create('point/increase?type=question&id=' ~ question.getId() ) }}"><i class="fa fa-thumbs-up"></i></a>
-        <a href="{{ app.url.create('point/decrease?type=question&id=' ~ question.getId() ) }}"><i class="fa fa-thumbs-down"></i></a>
-        {% endif %}
-      </div>
 
       <h1 class="title">{{ question.getTitle() | escape }}</h1>
       <div>
@@ -81,13 +78,14 @@
   </div>
 
   <h3>Answers</h3>
-  <a href="{{ app.url.create('question?id=' ~ question.getId() ~ '&sort=rating') }}">Sort by rating</a> <a href="{{ app.url.create('question?id=' ~ question.getId()) }}">Sort by date</a>
   {% if answers is empty %}
 
     <p>No replies yet</p>
 
 
   {% else %}
+    <a href="{{ app.url.create('question?id=' ~ question.getId() ~ '&sort=rating') }}"><em>Sort by rating</em></a>
+    <a href="{{ app.url.create('question?id=' ~ question.getId()) }}"><em>Sort by date</em></a>
 
     {% for answer in answers %}
 
@@ -99,14 +97,6 @@
 
             <div class="image">
               <a href="{{ app.url.create('user?id=' ~ answer.getUser().getId()) }}"><img class="profile" src="{{ question.getUser().getImageSrc() }}" alt="Profile picture"></a>
-            </div>
-
-            <div>
-              Points: {{ answer.getRating() }}
-              {% if authed %}
-                <a href="{{ app.url.create('point/increase?type=answer&id=' ~ answer.getId()) }}"><i class="fa fa-thumbs-up"></i></a>
-                <a href="{{ app.url.create('point/decrease?type=answer&id=' ~ answer.getId()) }}"><i class="fa fa-thumbs-down"></i></a>
-              {% endif %}
             </div>
 
           </div>
@@ -132,7 +122,10 @@
 
             </div>
 
-            <div class="post">{{ app.textFilter.doFilter(answer.getBody(), 'shortcode, markdown') | raw }}</div>
+            <div class="post">
+              <div class="text">{{ app.textFilter.doFilter(answer.getBody(), 'shortcode, markdown') | raw }}</div>
+              {{ include('/partials/points.twig', {type: 'answer', id: answer.getId() }) }}
+            </div>
 
             {% if owner %}
 
@@ -178,14 +171,6 @@
                     {{ comment.getUser().getUsername() }}
                   </a>
 
-                  <div>
-                    Points: {{ comment.getRating() }}
-                    {% if authed %}
-                      <a href="{{ app.url.create('point/increase?type=comment&id=' ~ comment.getId()) }}"><i class="fa fa-thumbs-up"></i></a>
-                      <a href="{{ app.url.create('point/decrease?type=comment&id=' ~ comment.getId()) }}"><i class="fa fa-thumbs-down"></i></a>
-                    {% endif %}
-                  </div>
-
                 </div>
 
                 <div class="right">
@@ -196,9 +181,14 @@
                     <span class="meta">{{ comment.getDateCreated() }}</span>
                   </div>
                   <div class="post">
-                    {{ app.textFilter.doFilter(comment.getBody(), 'shortcode, markdown') | raw }}
+                    <div class="text">
+                      {{ app.textFilter.doFilter(comment.getBody(), 'shortcode, markdown') | raw }}
+                    </div>
                   </div>
                 </div>
+
+
+                {{ include('/partials/points.twig', {type: 'comment', id: comment.getId() }) }}
 
               </div>
 

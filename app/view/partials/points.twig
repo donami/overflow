@@ -1,0 +1,17 @@
+<div class="rate">
+  {% if authed %}
+    <a href="{{ app.url.create('point/increase?type=' ~ type ~ '&id=' ~ id ) }}"><i class="fa fa-3x fa-angle-up"></i></a>
+  {% else %}
+    <span title="Please login to rate"><i class="fa fa-3x fa-angle-up"></i></span>
+  {% endif %}
+
+  <div class="points {{ question.getRating() < 0 ? 'negative' : 'positive' }}">
+    {{ question.getRating() }}
+  </div>
+
+  {% if authed %}
+    <a href="{{ app.url.create('point/decrease?type=' ~ type ~ '&id=' ~ id ) }}"><i class="fa fa-3x fa-angle-down"></i></a>
+  {% else %}
+    <span title="Please login to rate"><i class="fa fa-3x fa-angle-down"></i></span>
+  {% endif %}
+</div>
