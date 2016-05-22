@@ -1,5 +1,5 @@
 {
-    "name": "anax/mvc",    
+    "name": "anax/mvc",
     "type": "library",
     "description": "Webtemplate to create websites",
     "keywords": ["boilerplate", "framework", "mvc", "micro", "education"],
@@ -13,6 +13,13 @@
             "role": "Developer"
         }
     ],
+    "repositories":
+    [
+        {
+            "type": "vcs",
+            "url": "https://github.com/donami/PhpFlashMessages"
+        }
+    ],
     "require": {
         "php": ">=5.4",
         "mos/ctextfilter": "1.2.2",
@@ -20,7 +27,8 @@
         "mos/cdatabase": "^0.1.1",
         "doctrine/orm": "^2.5",
         "symfony/yaml": "^3.0",
-        "twig/twig": "^1.24"
+        "twig/twig": "^1.24",
+        "plasticbrain/php-flash-messages": "dev-dev-custom"
     },
     "autoload": {
         "psr-4": { "Anax\\": "src/" }

@@ -212,6 +212,7 @@ class QuestionController implements \Anax\DI\IInjectionAware
     public function deleteAction($questionId) {
       // If the question was deleted relocate the user
       if ($this->delete($questionId)) {
+        $this->di->message->success('The question was removed.');
         $this->response->redirect($this->url->create('questions'));
       }
     }

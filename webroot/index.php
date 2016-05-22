@@ -35,11 +35,10 @@ $di->setShared('auth', function() use ($di) {
     return $auth;
 });
 
-$di->set('Flash', function() use ($di) {
-  $flash = new Anax\Flash\CFlashBasic();
-  $flash->setDI($di);
-
-  return $flash;
+$di->set('message', function() use($di) {
+  $message = new Plasticbrain\FlashMessages\FlashMessages();
+  $message->setDI($di);
+  return $message;
 });
 
 $di->set('entityManager', $entityManager);

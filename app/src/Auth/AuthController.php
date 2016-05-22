@@ -20,14 +20,17 @@ class AuthController extends LoginForm implements \Anax\DI\IInjectionAware
                 ->findOneBy(['username' => $username]);
 
       if (!$auth) {
+        $this->di->message->error('No user with that name exists', $this->url->create('login'));
         die('No user with that username');
       }
 
       // If auth is succesfull
       if (password_verify($password, $auth->getPassword())) {
         $this->di->session->set('user', $auth);
+        $this->di->message->success('You were successfully logged in');
       }
       else {
+        $this->di->message->error('Password did not match any existing users');
         $this->logoutAction();
       }
 
@@ -40,6 +43,7 @@ class AuthController extends LoginForm implements \Anax\DI\IInjectionAware
 
 
     public function logoutAction() {
+      $this->di->message->success('You were successfully logged out');
       $this->di->session->set('user', null);
     }
 
