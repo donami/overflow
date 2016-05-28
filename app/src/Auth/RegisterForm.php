@@ -11,20 +11,19 @@ class RegisterForm extends \Mos\HTMLForm\CForm
         'username' => [
             'type'        => 'text',
             'label'       => 'Username',
-            // 'required'    => true,
-            // 'validation'  => ['not_empty'],
+            'required'    => true,
+            'validation'  => ['not_empty'],
         ],
         'password' => [
             'type'        => 'password',
             'label'       => 'Password',
-            // 'required'    => true,
-            // 'validation'  => ['not_empty', 'email_adress'],
+            'required'    => true,
         ],
         'email' => [
             'type'        => 'email',
-            'label'       => 'Email', // TODO: Should be required fields
-            // 'required'    => true,
-            // 'validation'  => ['not_empty', 'email_adress'],
+            'label'       => 'Email',
+            'required'    => true,
+            'validation'  => ['not_empty', 'email_adress'],
         ],
         'submit' => [
             'type'      => 'submit',

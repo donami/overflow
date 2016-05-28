@@ -17,7 +17,7 @@ Thumbs.db
 # Package handling
 # composer.json
 composer.lock
-vendor
+# vendor
 
 # Test
 coverage

@@ -19,7 +19,8 @@ class QuestionController implements \Anax\DI\IInjectionAware
 
       // Fetch the question
       if (!$question = $this->entityManager->find('\donami\Question\Question', $questionId)) {
-        die("Unable to find question");
+        $this->di->message->error('Unable to find question', $this->url->create());
+        return false;
       }
 
       $authed = false;
@@ -167,12 +168,14 @@ class QuestionController implements \Anax\DI\IInjectionAware
 
       // Make sure that title is defined
       if (empty($title)) {
-        die("You cannot leave title empty");
+        $this->di->message->error('You cannot leave title empty');
+        return false;
       }
 
       // Make sure that body is defined
       if (empty($body)) {
-        die("You cannot leave the question field empty");
+        $this->di->message->error('You cannot leave question field empty');
+        return false;
       }
 
       // Inserting question data
@@ -274,6 +277,21 @@ class QuestionController implements \Anax\DI\IInjectionAware
      */
     private function update($questionId, $data)
     {
+      $title = trim($data['title']);
+      $body = trim($data['body']);
+
+      // Make sure that title is defined
+      if (empty($title)) {
+        $this->di->message->error('You cannot leave title empty');
+        return false;
+      }
+
+      // Make sure that body is defined
+      if (empty($body)) {
+        $this->di->message->error('You cannot leave question field empty');
+        return false;
+      }
+
       // Clear tags before updating
       $question = $this->entityManager->getRepository('\donami\Question\Question')->find($questionId);
 
