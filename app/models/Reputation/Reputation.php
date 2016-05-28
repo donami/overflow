@@ -135,6 +135,14 @@ class Reputation
         $points = 15;
         break;
 
+      case 'received_points_up':
+        $points = 1;
+        break;
+
+      case 'received_points_down':
+        $points = -1;
+        break;
+
       default:
         $points = 0;
         break;

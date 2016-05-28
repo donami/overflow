@@ -96,7 +96,7 @@ class Comment
       $this->answer = $answer;
     }
 
-    public function getDateCreated($value='')
+    public function getDateCreated()
     {
       return $this->date_created->format('Y-m-d H:i');
     }

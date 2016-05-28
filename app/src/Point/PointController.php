@@ -91,7 +91,6 @@ class PointController implements \Anax\DI\IInjectionAware
       $reputation = $this->parent->getUser()->getReputation();
       $action = new \donami\Action\Action;
 
-
       // If user already has voted on answer
       if ($exists = $this->checkIfExists()) {
         // Return false if user already voted the same way
@@ -145,9 +144,7 @@ class PointController implements \Anax\DI\IInjectionAware
         $action->setType('received_points_down');
       }
 
-
-
-
+      $action->setPoint($point);
       $reputation->addAction($action);
 
       $this->entityManager->persist($reputation);

@@ -115,11 +115,18 @@
 
         {% else %}
 
-          {% for action in actions %}
+          <table class="table">
 
-            <div>{{ action._toString() | raw }}</div>
+            {% for action in actions %}
 
-          {% endfor %}
+              <tr>
+                <td style="width: 60%"><a href="{{ app.url.create(action._toString['link']) }}">{{ action._toString()['content'] }}</a></td>
+                <td style="width: 40%; text-align: right"><span class="meta">{{ action.getDateCreated() }}</span></td>
+              </tr>
+
+            {% endfor %}
+
+          </table>
 
         {% endif %}
 

@@ -69,7 +69,12 @@ class Point
       $this->answer = $answer;
     }
 
-    public function getAnswers($answer)
+    // public function getAnswers($answer)
+    // {
+    //   return $this->answer;
+    // }
+
+    public function getAnswer()
     {
       return $this->answer;
     }

@@ -1,6 +1,8 @@
 <div class="rate">
-  {% if authed %}
+  {% if authed and not owner %}
     <a href="{{ app.url.create('point/increase?type=' ~ type ~ '&id=' ~ id ) }}"><i class="fa fa-3x fa-angle-up"></i></a>
+  {% elseif authed and owner %}
+    <span title="You can not rate this"><i class="fa fa-3x fa-angle-up"></i></span>
   {% else %}
     <span title="Please login to rate"><i class="fa fa-3x fa-angle-up"></i></span>
   {% endif %}
@@ -9,8 +11,10 @@
     {{ rating }}
   </div>
 
-  {% if authed %}
+  {% if authed and not owner %}
     <a href="{{ app.url.create('point/decrease?type=' ~ type ~ '&id=' ~ id ) }}"><i class="fa fa-3x fa-angle-down"></i></a>
+  {% elseif authed and owner %}
+    <span title="You can not rate this"><i class="fa fa-3x fa-angle-down"></i></span>
   {% else %}
     <span title="Please login to rate"><i class="fa fa-3x fa-angle-down"></i></span>
   {% endif %}

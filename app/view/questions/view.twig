@@ -89,7 +89,7 @@
 
     {% for answer in answers %}
 
-      <div class="comment {{ question.getBestAnswer() == answer ? 'accepted-comment' : '' }}">
+      <div class="comment {{ question.getBestAnswer() == answer ? 'accepted-comment' : '' }}" id="answer-{{ answer.getId() }}">
 
         <div class="parent-comment">
 
@@ -159,7 +159,7 @@
 
             {% for comment in answer.getComments() %}
 
-              <div class="child-comment">
+              <div class="child-comment" id="comment-{{ comment.getId() }}">
 
                 <div class="left">
 

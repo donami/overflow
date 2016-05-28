@@ -205,6 +205,7 @@ class QuestionController implements \Anax\DI\IInjectionAware
       // Add the points for asking a question
       $action = new \donami\Action\Action;
       $action->setType('write_question');
+      $action->setQuestion($question);
 
       $reputation = $user->getReputation();
       $reputation->addAction($action);

@@ -31,6 +31,41 @@ class Action
   */
   protected $type;
 
+  /**
+   * @OneToOne(targetEntity="\donami\Question\Question")
+   * @var \donami\Question\Question
+   */
+  protected $question;
+
+  /**
+   * @OneToOne(targetEntity="\donami\Answer\Answer")
+   * @var \donami\Answer\Answer
+   */
+  protected $answer;
+
+  /**
+   * @OneToOne(targetEntity="\donami\Comment\Comment")
+   * @var \donami\Comment\Comment
+   */
+  protected $comment;
+
+  /**
+   * @OneToOne(targetEntity="\donami\Point\Point")
+   * @JoinColumn(onDelete="CASCADE")
+   * @var \donami\Point\Point
+   */
+  protected $point;
+
+  /**
+   * @Column(type="datetime")
+   * @var \Datetime
+   */
+  protected $date_created;
+
+  public function __construct()
+  {
+    $this->date_created = new \Datetime('now');
+  }
 
   /**
   * Get the value of Id
@@ -106,16 +141,21 @@ class Action
 
   public function _toString()
   {
+    $link = '#';
+
     switch ($this->type) {
       case 'write_answer':
+        $link = 'question?id=' . $this->answer->getQuestion()->getId() . '#answer-' . $this->answer->getId();
         $content = 'Wrote an answer';
         break;
 
       case 'write_question':
+        $link = 'question?id=' . $this->question->getId();
         $content = 'Asked a question';
         break;
 
       case 'write_comment':
+        $link = 'question?id=' . $this->comment->getAnswer()->getQuestion()->getId() . '#comment-' . $this->comment->getId();
         $content = 'Posted a comment';
         break;
 
@@ -124,6 +164,16 @@ class Action
         break;
 
       case 'received_points_down':
+        if ($this->point->getQuestion()) {
+          $link = 'question?id=' . $this->point->getQuestion()->getId();
+        }
+        elseif ($this->point->getAnswer()) {
+          $link = 'question?id=' . $this->point->getAnswer()->getQuestion()->getId();
+        }
+        else if ($this->point->getComment()) {
+          $link = 'question?id=' . $this->point->getComment()->getAnswer()->getQuestion()->getId();
+        }
+
         $content = 'Lost a point from a post';
         break;
 
@@ -133,7 +183,131 @@ class Action
         break;
     }
 
-    return '<span>' . $content . '</span>';
+    return [
+      'link' => $link,
+      'content' => $content,
+    ];
+  }
+
+  /**
+  * Get the value of Question
+  *
+  * @return \donami\Question\Question
+  */
+  public function getQuestion()
+  {
+    return $this->question;
+  }
+
+  /**
+  * Set the value of Question
+  *
+  * @param \donami\Question\Question question
+  *
+  * @return self
+  */
+  public function setQuestion(\donami\Question\Question $question)
+  {
+    $this->question = $question;
+
+    return $this;
+  }
+
+  /**
+  * Get the value of Answer
+  *
+  * @return \donami\Answer\Answer
+  */
+  public function getAnswer()
+  {
+    return $this->answer;
+  }
+
+  /**
+  * Set the value of Answer
+  *
+  * @param \donami\Answer\Answer answer
+  *
+  * @return self
+  */
+  public function setAnswer(\donami\Answer\Answer $answer)
+  {
+    $this->answer = $answer;
+
+    return $this;
+  }
+
+  /**
+  * Get the value of Comment
+  *
+  * @return \donami\Comment\Comment
+  */
+  public function getComment()
+  {
+    return $this->comment;
+  }
+
+  /**
+  * Set the value of Comment
+  *
+  * @param \donami\Comment\Comment comment
+  *
+  * @return self
+  */
+  public function setComment(\donami\Comment\Comment $comment)
+  {
+    $this->comment = $comment;
+
+    return $this;
+  }
+
+
+  /**
+  * Get the value of Point
+  *
+  * @return \donami\Point\Point
+  */
+  public function getPoint()
+  {
+    return $this->point;
+  }
+
+  /**
+  * Set the value of Point
+  *
+  * @param \donami\Point\Point point
+  *
+  * @return self
+  */
+  public function setPoint(\donami\Point\Point $point)
+  {
+    $this->point = $point;
+
+    return $this;
+  }
+
+  /**
+  * Get the value of Date Created
+  *
+  * @return \Datetime
+  */
+  public function getDateCreated()
+  {
+    return $this->date_created->format('Y-m-d H:i');
+  }
+
+  /**
+  * Set the value of Date Created
+  *
+  * @param \Datetime date_created
+  *
+  * @return self
+  */
+  public function setDateCreated(\Datetime $date_created)
+  {
+    $this->date_created = $date_created;
+
+    return $this;
   }
 
 }

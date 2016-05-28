@@ -37,6 +37,7 @@ class ReplyController implements \Anax\DI\IInjectionAware
       // Add the points for answering the question
       $action = new \donami\Action\Action;
       $action->setType('write_answer');
+      $action->setAnswer($answer);
 
       $reputation = $user->getReputation();
       $reputation->addAction($action);
@@ -71,6 +72,7 @@ class ReplyController implements \Anax\DI\IInjectionAware
       // Add points to the user for posting a comment
       $action = new \donami\Action\Action;
       $action->setType('write_comment');
+      $action->setComment($comment);
 
       $reputation = $user->getReputation();
       $reputation->addAction($action);
