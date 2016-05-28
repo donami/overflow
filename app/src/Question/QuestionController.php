@@ -202,6 +202,16 @@ class QuestionController implements \Anax\DI\IInjectionAware
         }
       }
 
+      // Add the points for asking a question
+      $action = new \donami\Action\Action;
+      $action->setType('write_question');
+
+      $reputation = $user->getReputation();
+      $reputation->addAction($action);
+
+      $this->entityManager->persist($reputation);
+      $this->entityManager->flush();
+
       // Redirect to the created question
       $this->response->redirect($this->url->create('question?id=' . $question->getId()));
     }

@@ -33,7 +33,7 @@
         <a class="username" href="{{ app.url.create('user?id=' ~ question.getUser().getId()) }}">{{ question.getUser().getUsername() }}</a>
 
         <ul>
-          <li><i class="fa fa-star fa-lg fa-fw"></i> &nbsp; Points: 10</li>
+          <li><i class="fa fa-star fa-lg fa-fw"></i> &nbsp; Reputation: {{ question.getUser().getReputation().getPoints() }}</li>
           <li><i class="fa fa-question fa-lg fa-fw"></i> &nbsp; Questions: {{ question.getUser().getQuestions().count() }} </li>
           <li><i class="fa fa-lightbulb-o fa-lg fa-fw"></i> &nbsp; Answers: {{ question.getUser().getAnswers().count() }} </li>
           <li><i class="fa fa-comments fa-lg fa-fw"></i> &nbsp; Comments: {{ question.getUser().getComments().count() }} </li>

@@ -17,10 +17,13 @@ Thumbs.db
 # Package handling
 # composer.json
 composer.lock
-# vendor
+vendor
 
 # Test
 coverage
 
 # JetBrains PhpStorm generated folder
 .idea
+
+# Misc
+pointrules.txt

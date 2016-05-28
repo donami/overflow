@@ -88,6 +88,12 @@ class User
     protected $points = null;
 
 
+    /**
+     * @OneToOne(targetEntity="\donami\Reputation\Reputation", cascade={"persist"})
+     * @var \donami\Reputation\Reputation
+     */
+    protected $reputation;
+
 
     public function __construct()
     {
@@ -97,33 +103,27 @@ class User
     }
 
 
-    public function getId()
-    {
+    public function getId() {
         return $this->id;
     }
 
-    public function getUsername()
-    {
+    public function getUsername() {
         return $this->username;
     }
 
-    public function setUsername($username)
-    {
+    public function setUsername($username) {
         $this->username = $username;
     }
 
-    public function getPassword()
-    {
+    public function getPassword() {
         return $this->password;
     }
 
-    public function setPassword($password)
-    {
+    public function setPassword($password) {
         $this->password = $password;
     }
 
-    public function getEmail()
-    {
+    public function getEmail() {
         return $this->email;
     }
 
@@ -193,6 +193,31 @@ class User
     public function getImage()
     {
       return '<img src="' . $this->getImageSrc . '" />';
+    }
+
+    /**
+     * Get the value of Reputation
+     *
+     * @return \donami\Reputation\Reputation
+     */
+    public function getReputation()
+    {
+      return $this->reputation;
+    }
+
+    /**
+     * Set the value of Reputation
+     *
+     * @param \donami\Reputation\Reputation reputation
+     *
+     * @return self
+     */
+    public function setReputation(\donami\Reputation\Reputation $reputation)
+    {
+      $this->reputation = $reputation;
+      $reputation->setUser($this);
+
+      return $this;
     }
 
 }

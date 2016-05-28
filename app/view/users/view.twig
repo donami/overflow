@@ -13,7 +13,7 @@
     <h1>{{ user.getUsername() }}</h1>
 
     <ul>
-      <li><i class="fa fa-star fa-lg fa-fw"></i> &nbsp; Points: 10</li>
+      <li><i class="fa fa-star fa-lg fa-fw"></i> &nbsp; Reputation: {{ user.getReputation().getPoints() }}</li>
       <li><i class="fa fa-question fa-lg fa-fw"></i> &nbsp; Questions: {{ user.getQuestions().count() }}</li>
       <li><i class="fa fa-lightbulb-o fa-lg fa-fw"></i> &nbsp; Answers: {{ user.getAnswers().count() }}</li>
       <li><i class="fa fa-comments fa-lg fa-fw"></i> &nbsp; Comments: {{ user.getComments().count() }}</li>
@@ -105,8 +105,28 @@
       </div>
     </div>
 
-  </div>
+    <div class="box">
+      <div class="title">History</div>
+      <div class="content">
 
+        {% if actions is empty %}
+
+          <p>No history available</p>
+
+        {% else %}
+
+          {% for action in actions %}
+
+            <div>{{ action._toString() | raw }}</div>
+
+          {% endfor %}
+
+        {% endif %}
+
+      </div>
+    </div>
+
+  </div>
 
 </div>
 

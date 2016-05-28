@@ -32,6 +32,7 @@ class UserController implements \Anax\DI\IInjectionAware
         'questions' => $user->getQuestions(),
         'answers' => $user->getAnswers(),
         'bestAnswers' => $bestAnswers,
+        'actions' => $user->getReputation()->getActions(),
       ]);
     }
 

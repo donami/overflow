@@ -87,6 +87,11 @@ class PointController implements \Anax\DI\IInjectionAware
      */
     public function updatePoints()
     {
+      // The posters reputation
+      $reputation = $this->parent->getUser()->getReputation();
+      $action = new \donami\Action\Action;
+
+
       // If user already has voted on answer
       if ($exists = $this->checkIfExists()) {
         // Return false if user already voted the same way
@@ -133,11 +138,19 @@ class PointController implements \Anax\DI\IInjectionAware
 
       if ($this->action == 'increase') {
         $this->parent->incrementRating();
+        $action->setType('received_points_up');
       }
       else {
         $this->parent->decrementRating();
+        $action->setType('received_points_down');
       }
 
+
+
+
+      $reputation->addAction($action);
+
+      $this->entityManager->persist($reputation);
       $this->entityManager->persist($point);
       $this->entityManager->flush();
 

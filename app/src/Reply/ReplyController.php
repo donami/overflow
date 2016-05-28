@@ -34,6 +34,16 @@ class ReplyController implements \Anax\DI\IInjectionAware
       $this->entityManager->persist($answer);
       $this->entityManager->flush();
 
+      // Add the points for answering the question
+      $action = new \donami\Action\Action;
+      $action->setType('write_answer');
+
+      $reputation = $user->getReputation();
+      $reputation->addAction($action);
+
+      $this->entityManager->persist($reputation);
+      $this->entityManager->flush();
+
       $this->response->redirect($this->url->create('question?id=' . $data['question_id']));
 
     }
@@ -56,6 +66,16 @@ class ReplyController implements \Anax\DI\IInjectionAware
       $comment->assignToAnswer($answer);
 
       $this->entityManager->persist($comment);
+      $this->entityManager->flush();
+
+      // Add points to the user for posting a comment
+      $action = new \donami\Action\Action;
+      $action->setType('write_comment');
+
+      $reputation = $user->getReputation();
+      $reputation->addAction($action);
+
+      $this->entityManager->persist($reputation);
       $this->entityManager->flush();
 
       $this->response->redirect($this->url->create('question?id=' . $answer->getQuestion()->getId()));
