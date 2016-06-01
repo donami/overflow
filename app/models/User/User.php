@@ -46,24 +46,6 @@ class User
     protected $posts = 0;
 
     /**
-     * @Column(type="integer")
-     * @var int
-     */
-    protected $question_count = 0;
-
-    /**
-     * @Column(type="integer")
-     * @var int
-     */
-    protected $answer_count = 0;
-
-    /**
-     * @Column(type="integer")
-     * @var int
-     */
-    protected $point_count = 0;
-
-    /**
      * @OneToMany(targetEntity="\donami\Answer\Answer", mappedBy="user")
      * @var int
      */
@@ -93,6 +75,12 @@ class User
      * @var \donami\Reputation\Reputation
      */
     protected $reputation;
+
+    /**
+     * @Column(type="datetime")
+     * @var \Datetime
+     */
+    protected $date_created;
 
 
     public function __construct()
@@ -219,5 +207,30 @@ class User
 
       return $this;
     }
+
+    /**
+    * Get the value of Date Created
+    *
+    * @return \Datetime
+    */
+    public function getDateCreated()
+    {
+      return $this->date_created;
+    }
+
+    /**
+    * Set the value of Date Created
+    *
+    * @param \Datetime date_created
+    *
+    * @return self
+    */
+    public function setDateCreated(\Datetime $date_created)
+    {
+      $this->date_created = $date_created;
+
+      return $this;
+    }
+
 
 }

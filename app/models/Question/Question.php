@@ -52,7 +52,7 @@ class Question
     protected $title;
 
     /**
-     * @Column(type="string")
+     * @Column(type="text")
      * @var string
      */
     protected $body;
@@ -91,17 +91,17 @@ class Question
 
     public function getId()
     {
-        return $this->id;
+      return $this->id;
     }
 
     public function getTitle()
     {
-        return $this->title;
+      return $this->title;
     }
 
     public function setTitle($title)
     {
-        $this->title = $title;
+      $this->title = $title;
     }
 
     public function getUser()
@@ -111,17 +111,22 @@ class Question
 
     public function getBody()
     {
-        return $this->body;
+      return $this->body;
     }
 
     public function setBody($body)
     {
-        $this->body = $body;
+      $this->body = $body;
     }
 
     public function getDateCreated()
     {
-        return $this->date_created->format('Y:m-d H:i');
+      return $this->date_created->format('Y:m-d H:i');
+    }
+
+    public function getDateCreatedRaw()
+    {
+      return $this->date_created;
     }
 
     public function getTags()

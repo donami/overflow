@@ -2,7 +2,7 @@
 
 {% block content %}
 
-<div>
+<div class="user-list-container">
 
   <h1>Display user list</h1>
 
@@ -13,13 +13,30 @@
     <div class="content">
       {% if users is not empty %}
 
-        {% for user in users %}
+        <table class="table table-user">
 
-          <div>
-            <a href="{{ app.url.create('user?id=' ~ user.getId()) }}">{{ user.getUsername() }}</a>
-          </div>
+          <tr>
+            <th colspan="2">List of users</th>
+            <th>Date registered</th>
+            <th>Status</th>
+            <th>Points</th>
+          </tr>
 
-        {% endfor %}
+          {% for user in users %}
+
+          <tr>
+            <td class="picture"><img class="profile-image" src="{{ user.getImageSrc(64) }}" alt="Profile picture"></td>
+            <td class="user"><h4><a href="{{ app.url.create('user?id=' ~ user.getId()) }}">{{ user.getUsername() }}</a></h4></td>
+            <td class="date-registered">
+              {{ user.getDateCreated().format('Y-m-d') }}
+            </td>
+            <td class="status">{{ user.admin ? 'Admin' : 'User' }}</td>
+            <td class="points"><i class="fa fa-star star"></i> {{ user.getReputation().getPoints() }}</td>
+          </tr>
+
+          {% endfor %}
+
+        </table>
 
       {% else %}
 

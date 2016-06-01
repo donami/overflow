@@ -18,6 +18,8 @@ $twig = new Twig_Environment($loader, [
   'debug' => true,
 ]);
 $twig->addExtension(new Twig_Extension_Debug());
+$twig->addExtension(new Twig_Extensions_Extension_Text());
+$twig->addExtension(new Twig_Extensions_Extension_Date());
 $twig->addGlobal('app', $app);
 
 // Database handling

@@ -2,7 +2,7 @@
 
 {% block content %}
 
-<div>
+<div class="tag-list-container">
 
   <h1>View list of tags</h1>
 
@@ -16,9 +16,7 @@
 
         {% for tag in tags %}
 
-          <div>
-            <a href="{{app.url.create('tag?tag=' ~ tag.getTitle()) }}">{{ tag.getTitle() }}</a>
-          </div>
+            <a class="tag" href="{{app.url.create('tag?tag=' ~ tag.getTitle()) }}">{{ tag.getTitle() }}</a>
 
         {% endfor %}
 

@@ -41,8 +41,8 @@
 
         {% if admin %}
           <div class="actions">
-            <a class="btn btn-accept" href="{{ app.url.create('question/edit?id=' ~ question.getId()) }}">Edit</a>
-            <a class="btn btn-warning" href="{{ app.url.create('question/delete?id=' ~ question.getId()) }}">Delete</a>
+            <a class="btn btn-accept" href="{{ app.url.create('question/edit?id=' ~ question.getId()) }}"><i class="fa fa-edit fa-lg"></i> Edit</a>
+            <a class="btn btn-warning" href="{{ app.url.create('question/delete?id=' ~ question.getId()) }}"><i class="fa fa-trash-o fa-lg"></i> Delete</a>
           </div>
         {% endif %}
 

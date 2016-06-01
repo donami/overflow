@@ -160,21 +160,26 @@ class Action
         break;
 
       case 'received_points_up':
-        $content = 'Got a point from a post';
-        break;
-
       case 'received_points_down':
         if ($this->point->getQuestion()) {
-          $link = 'question?id=' . $this->point->getQuestion()->getId();
+          $question = $this->point->getQuestion();
+          $link = 'question?id=' . $question->getId();
         }
         elseif ($this->point->getAnswer()) {
-          $link = 'question?id=' . $this->point->getAnswer()->getQuestion()->getId();
+          $answer = $this->point->getAnswer();
+          $link = 'question?id=' . $answer->getQuestion()->getId() . '#answer-' . $answer->getId();
         }
         else if ($this->point->getComment()) {
-          $link = 'question?id=' . $this->point->getComment()->getAnswer()->getQuestion()->getId();
+          $comment = $this->point->getComment();
+          $link = 'question?id=' . $comment->getAnswer()->getQuestion()->getId() . '#comment-' . $comment->getId();
         }
 
-        $content = 'Lost a point from a post';
+        if ($this->type == 'received_points_up') {
+          $content = 'Gained a point from a post';
+        }
+        else {
+          $content = 'Lost a point from a post';
+        }
         break;
 
       default:

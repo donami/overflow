@@ -1,5 +1,8 @@
 <?php
 namespace donami\User;
+
+use \donami\Helper\Helper;
+
 /**
  * User controller
  *
@@ -33,6 +36,7 @@ class UserController implements \Anax\DI\IInjectionAware
         'answers' => $user->getAnswers(),
         'bestAnswers' => $bestAnswers,
         'actions' => $user->getReputation()->getActions(),
+        'rank' => Helper::getUserRank($user->getReputation()->getPoints())
       ]);
     }
 
