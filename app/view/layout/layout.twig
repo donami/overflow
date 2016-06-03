@@ -10,36 +10,39 @@
 
 <body>
 
-  <div id='header'>
-    <div class="container">
+  <div class="container">
 
-      {% include 'layout/header.twig' %}
+    <div id='header'>
 
-      <div id="navbar">
-        <nav class="navbar">
-          <ul>
-            <li><a href="{{ app.url.create() }}">Home</a></li>
-            <li><a href="{{ app.url.create('questions') }}">Questions</a></li>
-            <li><a href="{{ app.url.create('tags') }}">Tags</a></li>
-            <li><a href="{{ app.url.create('users') }}">Users</a></li>
-            <li><a href="{{ app.url.create('about') }}">About</a></li>
+        {% include 'layout/header.twig' %}
 
-            {% if app.auth.isAuthed %}
-              <li><a href="{{ app.url.create('logout') }}">Logout</a></li>
-            {% else %}
-              <li><a href="{{ app.url.create('login') }}">Login</a></li>
-              <li><a href="{{ app.url.create('register') }}">Register</a></li>
-            {% endif %}
+        <div id="navbar">
+          <nav class="navbar">
+            <ul>
+              <li><a href="{{ app.url.create() }}">Home</a></li>
+              <li><a href="{{ app.url.create('questions') }}">Questions</a></li>
+              <li><a href="{{ app.url.create('tags') }}">Tags</a></li>
+              <li><a href="{{ app.url.create('users') }}">Users</a></li>
+              <li><a href="{{ app.url.create('about') }}">About</a></li>
 
-          </ul>
-        </nav>
-      </div>
+              {% if app.auth.isAuthed %}
+                <li><a href="{{ app.url.create('logout') }}">Logout</a></li>
+              {% else %}
+                <li><a href="{{ app.url.create('login') }}">Login</a></li>
+                <li><a href="{{ app.url.create('register') }}">Register</a></li>
+              {% endif %}
+
+            </ul>
+          </nav>
+        </div>
 
     </div>
-  </div>
 
-  <div id='main'>
-    <div class="container">
+    {% block heading %}
+
+    {% endblock %}
+
+    <div id='main'>
 
       {{ app.message.display() }}
 
@@ -48,14 +51,15 @@
       {% endblock %}
 
     </div>
-  </div>
 
-  <div id='footer'>
-    <div class="container">
+    <div id='footer'>
+      <div class="container">
 
-      {% include 'layout/footer.twig' %}
+        {% include 'layout/footer.twig' %}
 
+      </div>
     </div>
+
   </div>
 
 </body>

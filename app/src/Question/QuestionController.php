@@ -48,6 +48,11 @@ class QuestionController implements \Anax\DI\IInjectionAware
         $answers = $question->getAnswers();
       }
 
+      $breadcrumb = new \Tadcka\Component\Breadcrumbs\Breadcrumb();
+      $breadcrumb->add('Home', '');
+      $breadcrumb->add('Questions', 'questions');
+      $breadcrumb->add($question->getTitle());
+
       echo $this->twig->render('questions/view.twig', [
         'question'  => $question,
         'answers'   => $answers,
@@ -55,6 +60,7 @@ class QuestionController implements \Anax\DI\IInjectionAware
         'owner'     => $owner,
         'authed'    => $authed,
         'admin'     => $admin,
+        'breadcrumb' => $breadcrumb,
       ]);
 
     }
@@ -70,9 +76,14 @@ class QuestionController implements \Anax\DI\IInjectionAware
 
       $questions = $this->entityManager->getRepository('\donami\Question\Question')->findAll();
 
+      $breadcrumb = new \Tadcka\Component\Breadcrumbs\Breadcrumb();
+      $breadcrumb->add('Home', '');
+      $breadcrumb->add('Questions');
+
       echo $this->twig->render('questions/list.twig', [
         'questions' => $questions,
         'authed' => $this->auth->isAuthed(),
+        'breadcrumb' => $breadcrumb,
       ]);
     }
 

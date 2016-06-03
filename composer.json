@@ -29,7 +29,8 @@
         "symfony/yaml": "^3.0",
         "twig/twig": "^1.24",
         "plasticbrain/php-flash-messages": "dev-dev-custom",
-        "twig/extensions": "^1.3"
+        "twig/extensions": "^1.3",
+        "tadcka/breadcrumbs": "^1.1"
     },
     "autoload": {
         "psr-4": { "Anax\\": "src/" }
