@@ -87,6 +87,7 @@ class User
     {
       $this->answers = new ArrayCollection();
       $this->questions = new ArrayCollection();
+      $this->date_created = new \DateTime('now');
       $this->posts = 0;
     }
 

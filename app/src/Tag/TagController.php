@@ -62,9 +62,14 @@ class TagController implements \Anax\DI\IInjectionAware
 
       $tags = $query->getResult();
 
+      $breadcrumb = new \Tadcka\Component\Breadcrumbs\Breadcrumb();
+      $breadcrumb->add('Home', '');
+      $breadcrumb->add('Tags');
+
       // Render the view
       echo $this->twig->render('tags/list.twig', [
         'tags' => $tags,
+        'breadcrumb' => $breadcrumb,
       ]);
     }
 

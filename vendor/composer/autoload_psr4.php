@@ -12,7 +12,7 @@ return array(
     'Symfony\\Component\\Console\\' => array($vendorDir . '/symfony/console'),
     'Plasticbrain\\FlashMessages\\' => array($vendorDir . '/plasticbrain/php-flash-messages/src'),
     'Mos\\TextFilter\\' => array($vendorDir . '/mos/ctextfilter/src/TextFilter'),
-    'Mos\\' => array($vendorDir . '/mos/cform/src', $vendorDir . '/mos/cdatabase/src'),
+    'Mos\\' => array($vendorDir . '/mos/cdatabase/src', $vendorDir . '/mos/cform/src'),
     'Doctrine\\Instantiator\\' => array($vendorDir . '/doctrine/instantiator/src/Doctrine/Instantiator'),
     'Doctrine\\Common\\Cache\\' => array($vendorDir . '/doctrine/cache/lib/Doctrine/Common/Cache'),
     'Doctrine\\Common\\' => array($vendorDir . '/doctrine/common/lib/Doctrine/Common'),

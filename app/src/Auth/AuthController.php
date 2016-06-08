@@ -30,7 +30,7 @@ class AuthController extends LoginForm implements \Anax\DI\IInjectionAware
         $this->di->message->success('You were successfully logged in');
       }
       else {
-        $this->di->message->error('Password did not match any existing users');
+        $this->di->message->error('Password did not match any existing users', $this->url->create('login'));
         $this->logoutAction();
       }
 
