@@ -1,88 +1,162 @@
 {% extends "/layout/layout.twig" %}
 
+{% block heading %}
+
+  <div class="content-heading">
+
+    <div class="options">
+
+      <div class="options">
+        {% if authed %}
+
+          <a class="btn" href="{{ app.url.create('question/create') }}">Submit question</a>
+
+        {% else %}
+
+          <p><a class="btn" href="{{ app.url.create('login') }}">Login to post a question</a></p>
+
+        {% endif %}
+      </div>
+
+    </div>
+
+    {% if authed %}
+
+      <h1>Welcome, {{ app.auth.user.getUsername() }}</h1>
+
+    {% else %}
+
+      <h1>Welcome</h1>
+
+    {% endif %}
+
+    <div class="breadcrumbs">
+
+      {% for item in breadcrumb %}
+
+          {% if item.url is not null %}
+            <a href="{{ app.url.create(item.url) }}">{{ item.title }}</a> /
+          {% else %}
+            {{ item.title }}
+          {% endif %}
+
+      {% endfor %}
+
+    </div>
+
+
+  </div>
+
+{% endblock %}
+
 {% block content %}
 
-  <h1>Welcome</h1>
+  <div class="home-container">
 
-  <div class="box">
+    <div class="left-node">
 
-    <div class="title">Most recent questions</div>
+      <div class="box">
 
-    <div class="content">
+        <div class="title">Welcome</div>
 
-      {% if recentQuestions is empty %}
+        <div class="content">
 
-        <p>No recent questions found</p>
+          <p>Laborum occaecat minim amet ex ut ex cillum. Ad eu laboris mollit laboris eiusmod sunt magna magna laborum duis ipsum dolor do anim dolore culpa. Consequat irure consectetur enim laboris aliqua nisi consequat ullamco est adipisicing. Occaecat veniam occaecat adipisicing occaecat pariatur est consequat non nisi. Incididunt velit id aute ullamco in nisi voluptate ea laboris amet aute velit deserunt quis duis. Ipsum deserunt consequat laboris ea dolor aliqua officia non non consectetur labore ad ut culpa tempor reprehenderit minim.</p>
 
-      {% else %}
+        </div>
 
-        {% for question in recentQuestions %}
+      </div>
 
-          <div>
+      <div class="box">
 
-            <a href="{{ app.url.create('question?id=' ~ question.getId()) }}">{{ question.getTitle() }}</a>
+        <div class="title">Most recent questions</div>
 
-          </div>
+        <div class="content">
 
-        {% endfor %}
+          {% if recentQuestions is empty %}
 
-      {% endif %}
+            <p>No recent questions found</p>
 
-    </div>
+          {% else %}
 
-  </div>
+            {% for question in recentQuestions %}
 
+              <div>
 
-  <div class="box">
+                <ul class="recent-questions">
+                  <li class="points{{ question.getBestAnswer() ? ' accepted' : '' }}">{{ question.getAnswers().count() }}</li>
+                  <li><a href="{{ app.url.create('question?id=' ~ question.getId()) }}">{{ question.getTitle() }}</a></li>
+                  <li class="meta">{{ question.getDateCreatedRaw() | time_diff }}</li>
+                </ul>
 
-    <div class="title">Most active users</div>
+              </div>
 
-    <div class="content">
+            {% endfor %}
 
-      {% if activeUsers is empty %}
+          {% endif %}
 
-        <p>No users found</p>
+        </div>
 
-      {% else %}
+      </div>
 
-        {% for user in activeUsers %}
+    </div> <!-- / LEFT NODE -->
 
-          <div>
+    <div class="right-node">
 
-            <a href="{{ app.url.create('user?id=' ~ user.getId())}}">{{ user.getUsername()}}</a>
+      <div class="box">
 
-          </div>
+        <div class="title">Popular tags</div>
 
-        {% endfor %}
+        <div class="content">
 
-      {% endif %}
+          {% if popularTags is empty %}
 
-    </div>
+            <p>No tags found</p>
 
-  </div>
+          {% else %}
 
-  <div class="box">
+            {% for tag in popularTags %}
 
-    <div class="title">Popular tags</div>
+                <a class="tag" href="{{ app.url.create('tag?tag=' ~ tag.getTitle())}}">{{ tag.getTitle() }}</a>
 
-    <div class="content">
+            {% endfor %}
 
-      {% if popularTags is empty %}
+          {% endif %}
 
-        <p>No tags found</p>
+        </div>
 
-      {% else %}
+      </div>
 
-        {% for tag in popularTags %}
+      <div class="box">
 
-            <a class="tag" href="{{ app.url.create('tag?tag=' ~ tag.getTitle())}}">{{ tag.getTitle() }}</a>
+        <div class="title">Most active users</div>
 
-        {% endfor %}
+        <div class="content">
 
-      {% endif %}
+          {% if activeUsers is empty %}
 
-    </div>
+            <p>No users found</p>
 
-  </div>
+          {% else %}
+
+            {% for user in activeUsers %}
+
+              <div>
+
+                <a href="{{ app.url.create('user?id=' ~ user.getId())}}">{{ user.getUsername()}}</a>
+
+              </div>
+
+            {% endfor %}
+
+          {% endif %}
+
+        </div>
+
+      </div>
+
+    </div> <!-- / RIGHT NODE -->
+
+  </div> <!-- / HOME CONTAINER -->
 
 {% endblock %}

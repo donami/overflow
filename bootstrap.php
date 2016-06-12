@@ -15,10 +15,10 @@ $config = Setup::createAnnotationMetadataConfiguration(array(__DIR__."/app/model
 $conn = array(
   'dbname' => 'overflow',
   'user' => 'root',
-  'password' => 'root',
+  'password' => '4the99man',
   'host' => 'localhost',
   'driver' => 'pdo_mysql',
-  'unix_socket' => "/Applications/MAMP/tmp/mysql/mysql.sock"
+  // 'unix_socket' => "/Applications/MAMP/tmp/mysql/mysql.sock"
 );
 
 // obtaining the entity manager

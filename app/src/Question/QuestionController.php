@@ -74,7 +74,10 @@ class QuestionController implements \Anax\DI\IInjectionAware
     {
       $this->theme->setTitle('Questions');
 
-      $questions = $this->entityManager->getRepository('\donami\Question\Question')->findAll();
+      $questions = $this
+                    ->entityManager
+                    ->getRepository('\donami\Question\Question')
+                    ->findBy([], ['date_created' => 'DESC']);
 
       $breadcrumb = new \Tadcka\Component\Breadcrumbs\Breadcrumb();
       $breadcrumb->add('Home', '');

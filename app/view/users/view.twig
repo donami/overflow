@@ -19,11 +19,33 @@
       <li><i class="fa fa-comments fa-lg fa-fw"></i> &nbsp; Comments: {{ user.getComments().count() }}</li>
     </ul>
 
-    <div>{{ rank }}</div>
+    <div class="rank">{{ rank }}</div>
 
-  </div>
+    {% if user.id == app.auth.user.getId() %}
 
-  <div class="main">
+      <div>
+
+        <a class="btn btn-success" href="{{ app.url.create('edit-profile') }}">Edit profile</a>
+
+      </div>
+
+    {% endif %}
+
+  </div> <!-- / INFORMATION -->
+
+
+  <div class="left-node">
+
+    <div class="box">
+
+      <div class="title">About me</div>
+
+      <div class="content">
+        <p>{{ user.getDescription() }}</p>
+      </div>
+
+    </div>
+
 
     <div class="box">
 
@@ -53,59 +75,9 @@
 
     </div>
 
+  </div> <!-- LEFT NODE -->
 
-
-    <div class="box">
-
-      <div class="title">Answers by this user</div>
-
-      <div class="content">
-        {% if answers is empty %}
-
-          <p><em>No answers by this user yet</em></p>
-
-        {% else %}
-
-          {% for answer in answers %}
-
-            <div>
-
-              <a href="{{ app.url.create('question?id=' ~ answer.getQuestion().getId()) }}">{{ answer.getQuestion().getTitle() }}</a>
-
-            </div>
-
-          {% endfor %}
-
-        {% endif %}
-
-      </div>
-
-    </div>
-
-
-    <div class="box">
-      <div class="title">Questions answered by this user</div>
-      <div class="content">
-        {% if bestAnswers is empty %}
-
-          <p><em>No answers has been accepted as the best answer yet</em></p>
-
-        {% else %}
-
-          {% for answer in bestAnswers %}
-
-            <div>
-
-              <a href="{{ app.url.create('question?id=' ~ answer.getId()) }}">{{ answer.getTitle() }}</a>
-
-            </div>
-
-          {% endfor %}
-
-        {% endif %}
-
-      </div>
-    </div>
+  <div class="right-node">
 
     <div class="box">
       <div class="title">History</div>
@@ -135,7 +107,58 @@
       </div>
     </div>
 
-  </div>
+    <div class="box">
+      <div class="title">Questions answered by this user</div>
+      <div class="content">
+        {% if bestAnswers is empty %}
+
+          <p><em>No answers has been accepted as the best answer yet</em></p>
+
+        {% else %}
+
+          {% for answer in bestAnswers %}
+
+            <div>
+
+              <a href="{{ app.url.create('question?id=' ~ answer.getId()) }}">{{ answer.getTitle() }}</a>
+
+            </div>
+
+          {% endfor %}
+
+        {% endif %}
+
+      </div>
+    </div>
+
+    <div class="box">
+
+      <div class="title">Answers by this user</div>
+
+      <div class="content">
+        {% if answers is empty %}
+
+          <p><em>No answers by this user yet</em></p>
+
+        {% else %}
+
+          {% for answer in answers %}
+
+            <div>
+
+              <a href="{{ app.url.create('question?id=' ~ answer.getQuestion().getId()) }}">{{ answer.getQuestion().getTitle() }}</a>
+
+            </div>
+
+          {% endfor %}
+
+        {% endif %}
+
+      </div>
+
+    </div>
+
+  </div> <!-- RIGHT NODE -->
 
 </div>
 

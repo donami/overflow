@@ -9,7 +9,7 @@
     <div class="breadcrumbs">
 
       {% for item in breadcrumb %}
-      
+
           {% if item.url is not null %}
             <a href="{{ app.url.create(item.url) }}">{{ item.title }}</a> /
           {% else %}
@@ -151,11 +151,11 @@
                 {{ include('/partials/points.twig', {type: 'answer', id: answer.getId(), rating: answer.getRating() }) }}
               </div>
 
-              {% if owner %}
+              {% if owner or admin %}
 
                 <div class="actions">
 
-                  {% if not owner %}
+                  {% if owner %}
 
                     <a class="btn btn-accept" href="{{ app.url.create('reply/accept?replyID=' ~ answer.getId()) ~ '&questionID=' ~ question.getId() }}">
                       Accept as answer
@@ -168,6 +168,7 @@
                     Remove answer
                   </a>
                   {% endif %}
+                  
                 </div>
 
               {% endif %}

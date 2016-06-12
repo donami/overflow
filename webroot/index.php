@@ -135,6 +135,7 @@ $app->router->add('', function() use ($app) {
       'recentQuestions' => $recent,
       'activeUsers' => $activeUsers,
       'popularTags' => $popularTags,
+      'authed' => $app->auth->isAuthed(),
     ]);
 });
 
@@ -223,6 +224,21 @@ $app->router->add('tag', function() use ($app) {
       'params' => [$tagId]
     ]);
 
+});
+
+// Edit profile route
+$app->router->add('edit-profile', function() use ($app) {
+  if (!$app->auth->isAuthed()) {
+    $app->message->error('You are not authorized', $app->url->create(''));
+    die();
+  }
+
+  $app
+    ->dispatcher
+    ->forward([
+      'controller' => 'auth',
+      'action' => 'edit',
+    ]);
 });
 
 // Increase point route

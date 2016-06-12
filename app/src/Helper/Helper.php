@@ -8,10 +8,10 @@ trait Helper {
     $rank = 'New guy';
 
     if ($points > 100) {
-      $rank = 'Highest';
+      $rank = 'Gold';
     }
     else if ($points > 50) {
-      $rank = 'Medium';
+      $rank = 'Silver';
     }
     else if ($points > 20) {
       $rank = 'Beginner';

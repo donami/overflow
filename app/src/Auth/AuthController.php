@@ -65,5 +65,50 @@ class AuthController extends LoginForm implements \Anax\DI\IInjectionAware
       ]);
     }
 
+    public function editAction()
+    {
+      if (!empty($_POST)) {
+        $this->save($_POST);
+      }
+
+      $breadcrumb = new \Tadcka\Component\Breadcrumbs\Breadcrumb();
+      $breadcrumb->add('Home', '');
+      $breadcrumb->add('Profile', 'user?id=' . $this->auth->id());
+      $breadcrumb->add('Edit');
+
+      echo $this->twig->render('auth/edit.twig', [
+        'breadcrumb' => $breadcrumb,
+        'user' => $this->auth->user(),
+      ]);
+    }
+
+    /**
+     * Saving a profile
+     *
+     * @param  array $data
+     * @return \donami\User\User
+     */
+    private function save($data) {
+      $user = $this->entityManager->getRepository('\donami\User\User')->find($this->auth->user()->getId());
+
+      $user->setUsername( trim($data['username']) );
+      $user->setEmail( trim($data['email']) );
+      $user->setDescription( trim($data['description']) );
+
+      // Only update password if changed
+      if (!empty( trim($data['password']) )) {
+        $hash = password_hash( trim($data['password']), PASSWORD_DEFAULT );
+        $user->setPassword($hash);
+      }
+
+      $this->entityManager->persist($user);
+      $this->entityManager->flush();
+
+      // Update session object
+      $this->di->session->set('user', $user);
+
+      $this->di->message->success('Your profile was updated successfully', $this->url->create('edit-profile'));
+      return $user;
+    }
 
 }

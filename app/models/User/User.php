@@ -34,6 +34,12 @@ class User
     protected $email = '';
 
     /**
+     * @Column(type="text")
+     * @var string
+     */
+    protected $description;
+
+    /**
      * @Column(type="integer")
      * @var int
      */
@@ -233,5 +239,28 @@ class User
       return $this;
     }
 
+    /**
+    * Get the value of Description
+    *
+    * @return string
+    */
+    public function getDescription()
+    {
+      return $this->description;
+    }
+
+    /**
+    * Set the value of Description
+    *
+    * @param string description
+    *
+    * @return self
+    */
+    public function setDescription($description)
+    {
+      $this->description = $description;
+
+      return $this;
+    }
 
 }

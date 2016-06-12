@@ -1,0 +1,69 @@
+{% extends '/layout/layout.twig' %}
+
+{% block heading %}
+
+  <div class="content-heading">
+
+    <h1>Edit profile</h1>
+
+    <div class="breadcrumbs">
+
+      {% for item in breadcrumb %}
+
+          {% if item.url is not null %}
+            <a href="{{ app.url.create(item.url) }}">{{ item.title }}</a> /
+          {% else %}
+            {{ item.title }}
+          {% endif %}
+
+      {% endfor %}
+
+    </div>
+
+  </div>
+
+{% endblock %}
+
+{% block content %}
+
+<div class="login-container">
+
+  <div class="box">
+
+    <div class="title">Edit profile</div>
+
+    <div class="content">
+
+      <form class="form" action="{{ app.url.create('edit-profile') }}" method="POST">
+
+        <div>
+          <label for="username">Username</label>
+          <input id="username" type="text" name="username" value="{{ user.getUsername() }}" label="Username">
+        </div>
+
+        <div>
+          <label for="email">Email</label>
+          <input id="email" type="text" name="email" value="{{ user.getEmail() }}" label="Email">
+        </div>
+
+        <div>
+          <label for="password">Password</label>
+          <input id="password" type="password" name="password" value="" label="Password">
+        </div>
+
+        <div>
+          <label for="description">Description</label>
+          <textarea id="description" type="text" name="description" label="Describe yourself">{{ user.getDescription() }}</textarea>
+        </div>
+
+        <button type="submit" class="btn btn-success">Save</button>
+
+      </form>
+
+    </div>
+
+  </div>
+
+</div>
+
+{% endblock %}
