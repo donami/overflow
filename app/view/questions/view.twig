@@ -29,7 +29,7 @@
   <div id="question-container">
 
     <div class="sidebar">
-      {{ include('/partials/points.twig', {type: 'question', id: question.getId(), rating: question.getRating() }) }}
+      {{ include('/partials/points.twig', {type: 'question', id: question.getId(), rating: question.getRating(), poster: question.getUser() }) }}
     </div>
 
     <div class="question">
@@ -148,7 +148,7 @@
 
               <div class="post">
                 <div class="text">{{ app.textFilter.doFilter(answer.getBody(), 'shortcode, markdown') | raw }}</div>
-                {{ include('/partials/points.twig', {type: 'answer', id: answer.getId(), rating: answer.getRating() }) }}
+                {{ include('/partials/points.twig', {type: 'answer', id: answer.getId(), rating: answer.getRating(), poster: answer.getUser() }) }}
               </div>
 
               {% if owner or admin %}
@@ -168,7 +168,7 @@
                     Remove answer
                   </a>
                   {% endif %}
-                  
+
                 </div>
 
               {% endif %}
@@ -213,7 +213,7 @@
                   </div>
 
 
-                  {{ include('/partials/points.twig', {type: 'comment', id: comment.getId(), rating: comment.getRating() }) }}
+                  {{ include('/partials/points.twig', {type: 'comment', id: comment.getId(), rating: comment.getRating(), poster: comment.getUser() }) }}
 
                 </div>
 

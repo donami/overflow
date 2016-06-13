@@ -1,8 +1,10 @@
 <div class="rate">
-  {% if authed and not owner %}
+  {% if authed and not owner and poster.getId != app.auth.user().getId() %}
     <a href="{{ app.url.create('point/increase?type=' ~ type ~ '&id=' ~ id ) }}"><i class="fa fa-3x fa-angle-up"></i></a>
   {% elseif authed and owner %}
     <span title="You can not rate this"><i class="fa fa-3x fa-angle-up"></i></span>
+  {% elseif poster.getId() == app.auth.user().getId() %}
+    <span title="You can not rate your own post"><i class="fa fa-3x fa-angle-up"></i></span>
   {% else %}
     <span title="Please login to rate"><i class="fa fa-3x fa-angle-up"></i></span>
   {% endif %}
@@ -11,10 +13,12 @@
     {{ rating }}
   </div>
 
-  {% if authed and not owner %}
+  {% if authed and not owner and poster.getId() != app.auth.user().getId() %}
     <a href="{{ app.url.create('point/decrease?type=' ~ type ~ '&id=' ~ id ) }}"><i class="fa fa-3x fa-angle-down"></i></a>
   {% elseif authed and owner %}
     <span title="You can not rate this"><i class="fa fa-3x fa-angle-down"></i></span>
+  {% elseif poster.getId() == app.auth.user().getId() %}
+    <span title="You can not rate your own post"><i class="fa fa-3x fa-angle-down"></i></span>
   {% else %}
     <span title="Please login to rate"><i class="fa fa-3x fa-angle-down"></i></span>
   {% endif %}
