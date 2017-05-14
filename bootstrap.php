@@ -13,10 +13,10 @@ $config = Setup::createAnnotationMetadataConfiguration(array(__DIR__."/app/model
 
 // database configuration parameters
 $conn = array(
-  'dbname' => 'overflow',
-  'user' => 'root',
-  'password' => '4the99man',
-  'host' => 'localhost',
+  'dbname' => 'database',
+  'user' => 'user',
+  'password' => 'password',
+  'host' => 'host',
   'driver' => 'pdo_mysql',
   // 'unix_socket' => "/Applications/MAMP/tmp/mysql/mysql.sock"
 );
